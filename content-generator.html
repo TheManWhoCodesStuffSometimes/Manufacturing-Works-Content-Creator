@@ -1417,32 +1417,45 @@
             showMessage(`Background change for Post ${postNumber} - Coming soon!`, 'success');
         }
 
+        // UPDATED: Enhanced handlePostEdit function to pass image URL and data via parameters
         function handlePostEdit(postNumber) {
-            // Get the correct record ID for this specific post
+            // Get the correct record ID and generated content for this specific post
             const recordId = postNumber === "1" ? currentSession.postA_recordId : currentSession.postB_recordId;
+            const postContent = postNumber === "1" ? generatedContent.post1 : generatedContent.post2;
 
-            if (!recordId) {
+            if (!recordId || !postContent) {
                 alert(`No record found for Post ${postNumber}. Please generate the post first.`);
-                console.error(`No Airtable record ID found for Post ${postNumber}`);
+                console.error(`No Airtable record ID or content found for Post ${postNumber}`);
                 return;
             }
 
             console.log(`Opening editor for Post ${postNumber} with Record ID: ${recordId}`);
 
-            // Create URL with the specific record ID and minimal data
+            // Create URL with all necessary data passed as parameters
             const params = new URLSearchParams();
+            
+            // Essential data
             params.append('airtable_record_id', recordId);
             params.append('post_number', postNumber);
             params.append('session_id', currentSession.sessionId);
+            params.append('image_url', postContent.imageUrl);
+            
+            // Add original form data for AI context
+            if (lastFormData) {
+                Object.keys(lastFormData).forEach(key => {
+                    if (lastFormData[key] && key !== 'uploaded_photo') { // Skip file uploads
+                        params.append(key, lastFormData[key]);
+                    }
+                });
+            }
 
-            // Redirect to the finalize webhook URL
-            const webhookUrl = 'https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Post-Finalize';
-            const fullUrl = `${webhookUrl}?${params.toString()}`;
-
-            console.log('Redirecting to finalize page:', fullUrl);
+            // Navigate to finalize page with all data in URL
+            const finalizeUrl = `paste.html?${params.toString()}`;
+            
+            console.log('Redirecting to finalize page with parameters:', finalizeUrl);
 
             // Navigate to finalize page in same tab
-            window.location.href = fullUrl;
+            window.location.href = finalizeUrl;
         }
 
         // Function to determine which webhook URL to use based on photo type
