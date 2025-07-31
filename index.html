@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturing Works - AI-Powered Business Tools</title>
+    <meta name="description" content="Professional AI automation tools for manufacturing businesses. Create LinkedIn content and calculate operational savings with Manufacturing Works.">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1E2859 0%, #2c3a6b 100%);
+            min-height: 100vh;
+            color: #F2F2F2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            width: 200px;
+            height: auto;
+            margin: 0 auto 30px;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 300;
+            color: #D98A29;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+            margin: 60px 0;
+        }
+
+        .tool-card {
+            background: rgba(242, 242, 242, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            color: #1E2859;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #D98A29 0%, #c17a1f 100%);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+        }
+
+        .tool-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #D98A29 0%, #c17a1f 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(217, 138, 41, 0.3);
+        }
+
+        .tool-card h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #1E2859;
+            font-weight: 600;
+        }
+
+        .tool-description {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #444;
+        }
+
+        .tool-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .tool-features li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+            color: #666;
+        }
+
+        .tool-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4ecdc4;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .tool-button {
+            background: linear-gradient(135deg, #A4B8BF 0%, #8fa5ac 100%);
+            color: #1E2859;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(164, 184, 191, 0.3);
+        }
+
+        .tool-button:hover {
+            background: linear-gradient(135deg, #8fa5ac 0%, #7a939a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(164, 184, 191, 0.4);
+        }
+
+        .tool-button.primary {
+            background: linear-gradient(135deg, #D98A29 0%, #c17a1f 100%);
+            color: #F2F2F2;
+            box-shadow: 0 5px 15px rgba(217, 138, 41, 0.3);
+        }
+
+        .tool-button.primary:hover {
+            background: linear-gradient(135deg, #c17a1f 0%, #a66919 100%);
+            box-shadow: 0 8px 25px rgba(217, 138, 41, 0.4);
+        }
+
+        .value-proposition {
+            background: rgba(164, 184, 191, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            margin: 60px 0;
+            text-align: center;
+            border: 1px solid rgba(164, 184, 191, 0.2);
+        }
+
+        .value-proposition h2 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            color: #D98A29;
+        }
+
+        .value-proposition p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4ecdc4;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(164, 184, 191, 0.3);
+        }
+
+        .footer p {
+            opacity: 0.7;
+            font-size: 1em;
+        }
+
+        .navigation {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .nav-menu {
+            background: rgba(242, 242, 242, 0.95);
+            border-radius: 30px;
+            padding: 10px 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-link {
+            color: #1E2859;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-link:hover {
+            background: #D98A29;
+            color: #F2F2F2;
+        }
+
+        .nav-link.active {
+            background: #A4B8BF;
+            color: #1E2859;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                margin: 40px 0;
+            }
+
+            .tool-card {
+                padding: 30px;
+            }
+
+            .value-proposition {
+                padding: 30px;
+                margin: 40px 0;
+            }
+
+            .navigation {
+                position: static;
+                margin-bottom: 30px;
+            }
+
+            .nav-menu {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .logo {
+                width: 150px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tool-features {
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navigation">
+        <div class="nav-menu">
+            <a href="/" class="nav-link active">Home</a>
+            <a href="/content-generator.html" class="nav-link">Content Generator</a>
+            <a href="/savings-calculator.html" class="nav-link">Savings Calculator</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <img src="assets/logo.png" alt="Manufacturing Works Logo" class="logo">
+            <h1>AI-Powered Business Solutions</h1>
+            <p>Transform your manufacturing business with cutting-edge automation tools designed specifically for Wyoming's industrial landscape</p>
+        </div>
+
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">🚀</div>
+                <h2>LinkedIn Content Generator</h2>
+                <p class="tool-description">Create professional, engaging LinkedIn posts in minutes with our AI-powered content creation system.</p>
+                
+                <ul class="tool-features">
+                    <li>Generate two unique post variations instantly</li>
+                    <li>Manufacturing-focused content templates</li>
+                    <li>Custom image generation and photo database</li>
+                    <li>Advanced formatting and brand consistency</li>
+                    <li>Wyoming manufacturing industry expertise</li>
+                </ul>
+                
+                <a href="content-generator.html" class="tool-button primary">Launch Content Generator</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">💰</div>
+                <h2>Automation Savings Calculator</h2>
+                <p class="tool-description">Discover exactly how much time and money your business could save by automating content creation processes.</p>
+                
+                <ul class="tool-features">
+                    <li>Calculate operational savings in real-time</li>
+                    <li>Compare manual vs. automated workflows</li>
+                    <li>ROI analysis and payback period</li>
+                    <li>Multiple investment package options</li>
+                    <li>Customizable time and cost parameters</li>
+                </ul>
+                
+                <a href="savings-calculator.html" class="tool-button">Calculate Your Savings</a>
+            </div>
+        </div>
+
+        <div class="value-proposition">
+            <h2>Built for Manufacturing Excellence</h2>
+            <p>Manufacturing Works partners with Wyoming businesses to bridge the gap between traditional manufacturing and modern AI automation. Our tools are specifically designed to understand your industry challenges, speak your language, and deliver measurable results that impact your bottom line.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">3X</div>
+                    <div class="stat-label">Faster Content Creation</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Time Savings</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$3K+</div>
+                    <div class="stat-label">Annual Operational Savings</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Wyoming Manufacturing Focus</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 Manufacturing Works. Empowering Wyoming's manufacturing future through intelligent automation.</p>
+        </div>
+    </div>
+</body>
+</html>
