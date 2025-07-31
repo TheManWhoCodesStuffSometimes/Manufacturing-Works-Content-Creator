@@ -500,7 +500,82 @@
             font-size: 1.2em;
         }
 
-        /* Final ROI Section */
+        .pricing-selection {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .plan-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .plan-btn {
+            padding: 15px 30px;
+            border: 2px solid #e8e8e8;
+            background: #ffffff;
+            color: #2c3a6b;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(44, 58, 107, 0.1);
+        }
+
+        .plan-btn:hover {
+            border-color: #F5B800;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 184, 0, 0.2);
+        }
+
+        .plan-btn.active {
+            background: #F5B800;
+            border-color: #F5B800;
+            color: #2c3a6b;
+            box-shadow: 0 4px 15px rgba(245, 184, 0, 0.3);
+        }
+
+        .service-breakdown {
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .service-breakdown h4 {
+            border-bottom: 2px solid #F5B800;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .value-point {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4ecdc4;
+        }
+
+        .value-point h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1em;
+        }
+
+        .value-point p {
+            font-size: 0.95em;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+
+        .roi-details {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
         .roi-section {
             background: linear-gradient(135deg, #2c3a6b 0%, #3a4b7a 100%);
             color: #ffffff;
@@ -690,40 +765,58 @@
             </div>
         </div>
 
-        <!-- Simplified Pricing Section -->
+        <!-- Interactive Pricing Section -->
         <div class="pricing-section">
             <h2 class="section-title">
                 <span class="section-icon">💰</span>
-                LinkedIn Content Generator Pricing
+                Complete Service Package Pricing
             </h2>
 
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3>Monthly Plan</h3>
-                    <div class="price">$650<span class="price-period">/month</span></div>
-                    <p style="color: #666; margin: 15px 0;">Perfect for testing the waters</p>
-                    <ul class="pricing-features">
-                        <li>Unlimited LinkedIn post generation</li>
-                        <li>AI-powered content creation</li>
-                        <li>Professional image library</li>
-                        <li>Custom branding options</li>
-                        <li>Email support</li>
-                    </ul>
+            <div class="pricing-selection">
+                <h3 style="text-align: center; margin-bottom: 30px; color: #2c3a6b;">Select Your Plan:</h3>
+                <div class="plan-selector">
+                    <button class="plan-btn" id="monthlyBtn" data-plan="monthly">Monthly Plan</button>
+                    <button class="plan-btn active" id="annualBtn" data-plan="annual">Annual Contract</button>
                 </div>
+            </div>
 
-                <div class="pricing-card recommended">
-                    <div class="best-value-badge">BEST VALUE</div>
-                    <h3>Annual Contract</h3>
-                    <div class="price">$4,000<span class="price-period">/year</span></div>
-                    <div class="savings-note">Save $3,800 annually!</div>
-                    <ul class="pricing-features">
-                        <li>Everything in monthly plan</li>
-                        <li>Priority support</li>
-                        <li>Custom template creation</li>
-                        <li>Analytics and reporting</li>
-                        <li>Quarterly strategy sessions</li>
-                        <li>48% cost savings</li>
-                    </ul>
+            <div class="pricing-grid">
+                <div class="pricing-card active" id="selectedPlan">
+                    <div class="best-value-badge" id="valueBadge">BEST VALUE</div>
+                    <h3 id="planTitle">Annual Contract</h3>
+                    <div class="price" id="planPrice">$4,000<span class="price-period">/year</span></div>
+                    <div class="savings-note" id="planSavings">Save $3,800 annually!</div>
+                    
+                    <div class="service-breakdown">
+                        <h4 style="color: #2c3a6b; margin: 25px 0 15px 0; font-size: 1.2em;">Included Services:</h4>
+                        <ul class="pricing-features">
+                            <li><strong>LinkedIn Content Generator</strong></li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Unlimited post generation with AI</li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Professional image library access</li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Custom branding and templates</li>
+                        </ul>
+                        
+                        <ul class="pricing-features">
+                            <li><strong>MIRA Chatbot Enhancements</strong></li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Additional security implementations</li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Cost optimization configurations</li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Performance monitoring & tuning</li>
+                        </ul>
+                        
+                        <ul class="pricing-features">
+                            <li><strong>Centralized Payment Hub</strong></li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">No API key balance management</li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Unified billing for all services</li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Transparent usage reporting</li>
+                        </ul>
+                        
+                        <ul class="pricing-features">
+                            <li><strong>Support & Maintenance</strong></li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Priority technical support</li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Regular system updates</li>
+                            <li style="margin-left: 20px; font-size: 0.9em; color: #666;">Quarterly strategy sessions</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -731,8 +824,11 @@
         <!-- ROI Calculation -->
         <div class="roi-section">
             <h2>Your Return on Investment</h2>
-            <p style="font-size: 1.2em; margin-bottom: 30px; opacity: 0.9;">
-                Based on your current content creation process
+            <p style="font-size: 1.2em; margin-bottom: 15px; opacity: 0.9;">
+                Based on your selected plan: <span id="selectedPlanText">Annual Contract</span>
+            </p>
+            <p style="font-size: 1em; margin-bottom: 30px; opacity: 0.8;">
+                Operational savings from content creation automation
             </p>
 
             <div class="roi-grid">
@@ -743,21 +839,43 @@
                 </div>
 
                 <div class="roi-card">
-                    <h3>Annual Investment (Recommended)</h3>
-                    <div class="roi-value roi-negative">-$4,000</div>
-                    <p>Cost of our annual plan</p>
+                    <h3>Annual Investment Cost</h3>
+                    <div class="roi-value roi-negative" id="roiInvestmentCost">-$4,000</div>
+                    <p>Cost of selected plan</p>
                 </div>
 
                 <div class="roi-card">
                     <h3>Net Annual Benefit</h3>
-                    <div class="roi-value roi-positive" id="roiNet">+$680</div>
-                    <p>Pure profit plus 117 hours saved</p>
+                    <div class="roi-value" id="roiNet">+$680</div>
+                    <p>Pure profit plus <span id="roiTimeSaved">117</span> hours saved</p>
                 </div>
 
                 <div class="roi-card">
                     <h3>Payback Period</h3>
                     <div class="roi-value" style="color: #F5B800;" id="paybackMonths">10.3 months</div>
                     <p>Time to recover investment</p>
+                </div>
+            </div>
+            
+            <div class="roi-details">
+                <h3 style="color: #F5B800; margin: 30px 0 20px 0; text-align: center; font-size: 1.5em;">Value Beyond the Numbers</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+                    <div class="value-point">
+                        <h4 style="color: #4ecdc4; margin-bottom: 10px;">🔒 MIRA Security</h4>
+                        <p>Enhanced chatbot security protects your business data and customer interactions</p>
+                    </div>
+                    <div class="value-point">
+                        <h4 style="color: #4ecdc4; margin-bottom: 10px;">⚡ Cost Optimization</h4>
+                        <p>MIRA performance tuning reduces operational costs and improves response times</p>
+                    </div>
+                    <div class="value-point">
+                        <h4 style="color: #4ecdc4; margin-bottom: 10px;">💳 Unified Billing</h4>
+                        <p>No more managing API balances - we handle all the technical overhead</p>
+                    </div>
+                    <div class="value-point">
+                        <h4 style="color: #4ecdc4; margin-bottom: 10px;">📈 Scalability</h4>
+                        <p>Systems designed to grow with your business without additional complexity</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -834,8 +952,23 @@
 
         // ROI elements
         const roiOperational = document.getElementById('roiOperational');
+        const roiInvestmentCost = document.getElementById('roiInvestmentCost');
         const roiNet = document.getElementById('roiNet');
+        const roiTimeSaved = document.getElementById('roiTimeSaved');
         const paybackMonths = document.getElementById('paybackMonths');
+        const selectedPlanText = document.getElementById('selectedPlanText');
+
+        // Plan selection elements
+        const monthlyBtn = document.getElementById('monthlyBtn');
+        const annualBtn = document.getElementById('annualBtn');
+        const planTitle = document.getElementById('planTitle');
+        const planPrice = document.getElementById('planPrice');
+        const planSavings = document.getElementById('planSavings');
+        const valueBadge = document.getElementById('valueBadge');
+
+        // Current selected plan
+        let currentPlan = 'annual';
+        let currentOperationalSavings = 0;
 
         // Lunch and Learn elements
         const distanceTraveled = document.getElementById('distanceTraveled');
