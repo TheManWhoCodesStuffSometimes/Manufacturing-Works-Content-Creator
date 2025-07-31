@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturing Works Content Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1E2859 0%, #2c3a6b 100%);
+            min-height: 100vh;
+            color: #F2F2F2;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #F2F2F2;
+        }
+
+        .logo-placeholder {
+            width: 120px;
+            height: 80px;
+            background: #F2F2F2;
+            margin: 0 auto 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1E2859;
+            font-size: 14px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+            color: #D98A29;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Tab System Styles */
+        .content-tabs {
+            background: rgba(242, 242, 242, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            color: #1E2859;
+        }
+
+        .tab-header {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .tab-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            background: #F2F2F2;
+            border: 2px solid #A4B8BF;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item:hover {
+            border-color: #D98A29;
+            background: rgba(217, 138, 41, 0.05);
+        }
+
+        .tab-item.active {
+            border-color: #D98A29;
+            background: rgba(217, 138, 41, 0.1);
+        }
+
+        .tab-selector {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #A4B8BF;
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item.active .tab-selector {
+            border-color: #D98A29;
+            background: #D98A29;
+        }
+
+        .tab-item.active .tab-selector::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #F2F2F2;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .tab-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1E2859;
+        }
+
+        .tab-content {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(164, 184, 191, 0.1);
+            border-radius: 10px;
+            border: 1px solid #A4B8BF;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Advanced Settings Styles */
+        .advanced-dropdown {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .advanced-dropdown.expanded {
+            max-height: 2000px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(164, 184, 191, 0.3);
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .form-section h4 {
+            color: #1E2859;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 20px;
+            height: 20px;
+            background: #D98A29;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #F2F2F2;
+        }
+/* ===== BATCH 1 END ===== */
+        /* ===== BATCH 2 START ===== */
+        /* Tooltip Styles */
+        .tooltip-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tooltip-icon {
+            width: 18px;
+            height: 18px;
+            background: #A4B8BF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: help;
+            font-size: 11px;
+            color: #1E2859;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .tooltip-icon:hover {
+            background: #D98A29;
+            color: #F2F2F2;
+        }
+
+        /* Default tooltip positioning (below for section headers) */
+        .tooltip-text {
+            position: absolute;
+            top: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1E2859;
+            color: #F2F2F2;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.3;
+            max-width: 300px;
+            width: max-content;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            white-space: normal;
+            text-align: left;
+        }
+
+        .tooltip-text::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: #1E2859;
+        }
+
+        /* Label tooltips (to the right) */
+        label .tooltip-container .tooltip-text {
+            top: 50%;
+            left: 130%;
+            transform: translateY(-50%);
+        }
+
+        label .tooltip-container .tooltip-text::after {
+            top: 50%;
+            left: -6px;
+            bottom: auto;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-right-color: #1E2859;
+            border-bottom-color: transparent;
+        }
+
+        /* Special case for background photo section */
+        .universal-photo-section h4 .tooltip-container .tooltip-text {
+            top: 50%;
+            left: 130%;
+            transform: translateY(-50%);
+        }
+
+        .universal-photo-section h4 .tooltip-container .tooltip-text::after {
+            top: 50%;
+            left: -6px;
+            bottom: auto;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-right-color: #1E2859;
+            border-bottom-color: transparent;
+        }
+
+        .tooltip-icon:hover .tooltip-text {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: #1E2859;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #A4B8BF;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            background: #F2F2F2;
+            color: #1E2859;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #D98A29;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-option {
+            padding: 8px 16px;
+            background: #A4B8BF;
+            border: 2px solid #A4B8BF;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: #1E2859;
+        }
+
+        .toggle-option:hover {
+            background: #8fa5ac;
+            border-color: #8fa5ac;
+        }
+
+        .toggle-option.active {
+            background: #D98A29;
+            border-color: #D98A29;
+            color: #F2F2F2;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #A4B8BF;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover {
+            border-color: #D98A29;
+            background: rgba(217, 138, 41, 0.05);
+        }
+
+        .file-upload-area.dragover {
+            border-color: #D98A29;
+            background: rgba(217, 138, 41, 0.1);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .uploaded-file {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(217, 138, 41, 0.1);
+            border-radius: 5px;
+            font-size: 14px;
+            color: #1E2859;
+        }
+
+        /* Describe What You Want Styles */
+        .describe-content {
+            padding: 20px 0;
+        }
+
+        .describe-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #A4B8BF;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            background: #F2F2F2;
+            color: #1E2859;
+        }
+
+        .describe-textarea:focus {
+            border-color: #D98A29;
+            outline: none;
+        }
+
+        .describe-placeholder {
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Photo Type Button Styles */
+        .photo-type-section {
+            margin-top: 30px;
+        }
+
+        .universal-photo-section {
+            background: rgba(164, 184, 191, 0.1);
+            border-radius: 10px;
+            border: 1px solid #A4B8BF;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        /* Mobile responsiveness for tooltips */
+        @media (max-width: 768px) {
+            .tooltip-text,
+            label .tooltip-container .tooltip-text,
+            .universal-photo-section h4 .tooltip-container .tooltip-text {
+                position: fixed;
+                top: 50%;
+                left: 10px;
+                right: 10px;
+                transform: translateY(-50%);
+                max-width: none;
+                width: auto;
+            }
+
+            .tooltip-text::after,
+            label .tooltip-container .tooltip-text::after,
+            .universal-photo-section h4 .tooltip-container .tooltip-text::after {
+                display: none;
+            }
+        }
+        .photo-type-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .photo-type-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 15px;
+            background: #F2F2F2;
+            border: 2px solid #A4B8BF;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            gap: 8px;
+        }
+
+        .photo-type-btn:hover {
+            border-color: #D98A29;
+            background: rgba(217, 138, 41, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(164, 184, 191, 0.3);
+        }
+
+        .photo-type-btn.active {
+            border-color: #D98A29;
+            background: rgba(217, 138, 41, 0.1);
+            box-shadow: 0 4px 12px rgba(217, 138, 41, 0.2);
+        }
+
+        .photo-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .photo-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E2859;
+            margin-bottom: 2px;
+        }
+
+        .photo-desc {
+            font-size: 12px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        /* Generate Button */
+        .generate-btn {
+            background: linear-gradient(135deg, #A4B8BF 0%, #8fa5ac 100%);
+            color: #1E2859;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            box-shadow: 0 5px 15px rgba(164, 184, 191, 0.3);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(164, 184, 191, 0.4);
+        }
+
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Message Area */
+        .error-message {
+            background: #f44336;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        /* Loading Spinner */
+        #loading-spinner {
+            display: none;
+            color: #D98A29;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+/* ===== BATCH 2 END ===== */
+        /* ===== BATCH 3 START ===== */
+        /* Content Grid Styles */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .preview-section {
+            background: rgba(242, 242, 242, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .preview-section h3 {
+            margin-bottom: 20px;
+            color: #1E2859;
+        }
+
+        .preview-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #1E2859 0%, #2c3a6b 100%);
+            border-radius: 10px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #F2F2F2;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .vote-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .vote-btn {
+            background: #A4B8BF;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vote-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .vote-btn.upvote:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .vote-btn.downvote:hover {
+            background: #f44336;
+            color: white;
+        }
+
+        .vote-btn.voted-up {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .vote-btn.voted-down {
+            background: #f44336;
+            color: white;
+        }
+
+        .status-indicator {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .status-generating {
+            background: #FFA726;
+            color: white;
+        }
+
+        .status-complete {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status-waiting {
+            background: #A4B8BF;
+            color: #1E2859;
+        }
+
+        /* Action Buttons Styles */
+        .post-action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .format-btn {
+            background: #D98A29;
+            color: #F2F2F2;
+        }
+
+        .format-btn:hover {
+            background: #c17a1f;
+            transform: translateY(-1px);
+        }
+
+        .content-btn {
+            background: #A4B8BF;
+            color: #1E2859;
+        }
+
+        .content-btn:hover {
+            background: #8fa5ac;
+            transform: translateY(-1px);
+        }
+
+        .background-btn {
+            background: #1E2859;
+            color: #F2F2F2;
+        }
+
+        .background-btn:hover {
+            background: #162044;
+            transform: translateY(-1px);
+        }
+
+        .edit-btn {
+            background: #4CAF50;
+            color: #F2F2F2;
+        }
+
+        .edit-btn:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .action-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+
+            .tab-item {
+                padding: 12px 15px;
+            }
+
+            .tab-label {
+                font-size: 14px;
+            }
+
+            .post-action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .action-btn {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-placeholder">MW LOGO</div>
+            <h1>Content Generator</h1>
+            <p>Create professional LinkedIn posts in seconds</p>
+        </div>
+
+        <!-- New Tab System -->
+        <form class="content-tabs" id="generator-form">
+            <div class="tab-header">
+                <!-- Tab 1: Generate Random Post Idea -->
+                <div class="tab-item active" data-tab="random">
+                    <div class="tab-selector"></div>
+                    <div class="tab-label">Generate Random Post Idea</div>
+                </div>
+
+                <!-- Tab 2: Advanced Post Settings -->
+                <div class="tab-item" data-tab="advanced">
+                    <div class="tab-selector"></div>
+                    <div class="tab-label">Advanced Post Settings</div>
+                </div>
+
+                <!-- Tab 3: Describe What You Want -->
+                <div class="tab-item" data-tab="describe">
+                    <div class="tab-selector"></div>
+                    <div class="tab-label">Describe what you want</div>
+                </div>
+            </div>
+
+            <!-- Tab Content Areas -->
+
+            <!-- Random Post Tab Content (Empty - just selected by default) -->
+            <div class="tab-content active" id="random-content">
+                <!-- This tab has no additional content when selected -->
+            </div>
+
+            <!-- Advanced Settings Tab Content -->
+            <div class="tab-content" id="advanced-content">
+                <div class="advanced-dropdown" id="advanced-dropdown">
+                    <div class="form-section">
+                        <div class="tooltip-container">
+                            <h4><span class="section-icon">🎯</span>Content Focus</h4>
+                            <div class="tooltip-icon">?
+                                <div class="tooltip-text">Choose the main topic and style for your LinkedIn post content</div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    Industry Topic
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Select the manufacturing topic that aligns with your message goals</div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <div class="toggle-group">
+                                    <div class="toggle-option active" data-value="random">Random</div>
+                                    <div class="toggle-option" data-value="manufacturing-trends">Manufacturing Trends</div>
+                                    <div class="toggle-option" data-value="workforce-development">Workforce Development</div>
+                                    <div class="toggle-option" data-value="industry-4-0">Industry 4.0</div>
+                                    <div class="toggle-option" data-value="process-improvement">Process Improvement</div>
+                                </div>
+                                <input type="hidden" name="industry_topic" value="random">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    Content Type
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Choose the format that best fits your communication objective</div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <select name="content_type">
+                                    <option value="random">Random</option>
+                                    <option value="motivational-quote">Motivational Quote</option>
+                                    <option value="industry-insight">Industry Insight</option>
+                                    <option value="educational-tip">Educational Tip</option>
+                                    <option value="success-story">Success Story</option>
+                                    <option value="program-announcement">Program Announcement</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Tone
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Match your brand voice: Inspirational for motivation, Informative for education, Expert for credibility</div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <select name="tone">
+                                    <option value="random">Random</option>
+                                    <option value="inspirational">Inspirational</option>
+                                    <option value="informative">Informative</option>
+                                    <option value="expert-insight">Expert Insight</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="tooltip-container">
+                            <h4><span class="section-icon">🎨</span>Format</h4>
+                            <div class="tooltip-icon">?
+                                <div class="tooltip-text">Choose visual styling that matches your brand and maximizes engagement</div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    Post Format
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Select the visual layout style for your post design</div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <select name="post_format">
+                                    <option value="random">Random</option>
+                                    <option value="quote-template-bg">Quote Template</option>
+                                    <option value="standard-template-bg">Standard Template</option>
+                                    <option value="impact-post-template-bg">Impact Post Template</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="tooltip-container">
+                            <h4><span class="section-icon">📍</span>Audience Profile</h4>
+                            <div class="tooltip-icon">?
+                                <div class="tooltip-text">Target your ideal audience with location and industry-specific messaging</div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    Target Audience
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Select the combination that best describes your intended readers</div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <select name="audience_profile">
+                                    <option value="random">Random</option>
+                                    <option value="wyoming-manufacturers">Wyoming Manufacturers</option>
+                                    <option value="national-manufacturers">National Manufacturers</option>
+                                    <option value="wyoming-entrepreneurs">Wyoming Entrepreneurs</option>
+                                    <option value="national-entrepreneurs">National Entrepreneurs</option>
+                                    <option value="regional-small-business">Regional Small Business</option>
+                                    <option value="manufacturing-job-seekers">Manufacturing Job Seekers</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Call-to-Action
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Choose the action you want readers to take after viewing your post</div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <select name="cta_style">
+                                    <option value="random">Random</option>
+                                    <option value="learn-more">Learn More</option>
+                                    <option value="get-in-touch">Get In Touch</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Describe What You Want Tab Content -->
+            <div class="tab-content" id="describe-content">
+                <div class="describe-content">
+                    <textarea
+                        class="describe-textarea"
+                        name="user_description"
+                        placeholder="Describe the type of LinkedIn post you want to create. Be as specific or general as you'd like - for example: 'A motivational post about manufacturing innovation in Wyoming' or 'Something about workforce development with an inspiring tone'..."
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- Universal Background Photo Type Section - Always Visible -->
+            <div class="universal-photo-section">
+                <div class="tooltip-container">
+                    <h4 style="color: #1E2859; margin: 25px 0 15px 0; font-size: 1.1em; display: flex; align-items: center; gap: 10px;">
+                        <span class="section-icon" style="width: 20px; height: 20px; background: #D98A29; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #F2F2F2;">🖼️</span>
+                        Background Photo
+                    </h4>
+                    <div class="tooltip-icon">?
+                        <div class="tooltip-text">Choose your image source: curated database for quick selection, AI for custom visuals, or upload your own brand images</div>
+                    </div>
+                </div>
+
+                <div class="photo-type-buttons">
+                    <button type="button" class="photo-type-btn active" data-value="photo-database">
+                        <span class="photo-icon">📸</span>
+                        <span class="photo-label">Photo Database</span>
+                        <span class="photo-desc">Use our curated photos</span>
+                    </button>
+                    <button type="button" class="photo-type-btn" data-value="ai-generated">
+                        <span class="photo-icon">🤖</span>
+                        <span class="photo-label">AI Generated</span>
+                        <span class="photo-desc">Create custom image</span>
+                    </button>
+                    <button type="button" class="photo-type-btn" data-value="upload-photo">
+                        <span class="photo-icon">📤</span>
+                        <span class="photo-label">Upload Photo</span>
+                        <span class="photo-desc">Use your own image</span>
+                    </button>
+                </div>
+
+                <input type="hidden" name="background_photo_type" id="background-photo-type" value="photo-database">
+
+                <div class="form-group" id="upload-section" style="display: none; margin-top: 20px;">
+                    <div class="file-upload-area" onclick="document.getElementById('photo-upload').click()">
+                        <p>📤 Click to upload or drag & drop your photo here</p>
+                        <small>Supported formats: JPG, PNG, GIF (Max 10MB)</small>
+                    </div>
+                    <input type="file" id="photo-upload" class="file-input" name="uploaded_photo" accept="image/*">
+                    <div id="uploaded-file-display"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="generate-btn" id="generate-btn">Generate Both Posts</button>
+        </form>
+
+        <div id="message-area"></div>
+
+        <!-- Content Grid with New Button Layout -->
+        <div class="content-grid">
+            <!-- Post Preview A -->
+            <div class="preview-section">
+                <h3>Post A</h3>
+                <div class="status-indicator status-waiting" id="status-a">Waiting to generate</div>
+                <div class="preview-placeholder" id="preview-content-1">
+                    Click "Generate Both Posts" to start
+                </div>
+                <div class="vote-buttons">
+                    <button type="button" class="vote-btn upvote" data-post="1" data-vote="up">👍</button>
+                    <button type="button" class="vote-btn downvote" data-post="1" data-vote="down">👎</button>
+                </div>
+
+                <!-- New Button Layout for Post A -->
+                <div class="post-action-buttons">
+                    <button type="button" class="action-btn format-btn" data-post-number="1">Change Format</button>
+                    <button type="button" class="action-btn content-btn" data-post-number="1">Change Text Content</button>
+                    <button type="button" class="action-btn background-btn" data-post-number="1">Change Background</button>
+                    <button type="button" class="action-btn edit-btn" data-post-number="1">Go to Post Editor</button>
+                </div>
+            </div>
+
+            <!-- Post Preview B -->
+            <div class="preview-section">
+                <h3>Post B</h3>
+                <div class="status-indicator status-waiting" id="status-b">Waiting for Post A</div>
+                <div class="preview-placeholder" id="preview-content-2">
+                    Post B will generate automatically after Post A
+                </div>
+                <div class="vote-buttons">
+                    <button type="button" class="vote-btn upvote" data-post="2" data-vote="up">👍</button>
+                    <button type="button" class="vote-btn downvote" data-post="2" data-vote="down">👎</button>
+                </div>
+
+                <!-- New Button Layout for Post B -->
+                <div class="post-action-buttons">
+                    <button type="button" class="action-btn format-btn" data-post-number="2">Change Format</button>
+                    <button type="button" class="action-btn content-btn" data-post-number="2">Change Text Content</button>
+                    <button type="button" class="action-btn background-btn" data-post-number="2">Change Background</button>
+                    <button type="button" class="action-btn edit-btn" data-post-number="2">Go to Post Editor</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading-spinner">
+            <div class="spinner">⚙️</div>
+            <span id="loading-text">Generating your content...</span>
+        </div>
+    </div>
+<script>
+        // Store form data globally for edit functionality and Airtable integration
+        let lastFormData = {};
+        let generatedContent = {
+            post1: null,
+            post2: null
+        };
+
+        // Airtable session tracking - stores record IDs for both posts
+        let currentSession = {
+            sessionId: Date.now().toString(),
+            postA_recordId: null,
+            postB_recordId: null
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTabs();
+            initializeFormHandlers();
+            initializeFileUpload();
+            initializeButtonHandlers();
+
+            console.log('Manufacturing Works Content Generator loaded');
+            console.log('Post A Webhook URL:', 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF');
+            console.log('Post B Webhook URL:', 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Post-B');
+            console.log('Upload Image Webhook URL:', 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Upload-Image');
+            console.log('Session ID:', currentSession.sessionId);
+        });
+
+        // Tab System Functionality
+        function initializeTabs() {
+            const tabItems = document.querySelectorAll('.tab-item');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const advancedDropdown = document.getElementById('advanced-dropdown');
+
+            tabItems.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabType = this.getAttribute('data-tab');
+
+                    // Remove active class from all tabs and contents
+                    tabItems.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    // Show corresponding content
+                    const targetContent = document.getElementById(tabType + '-content');
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+
+                    // Special handling for advanced tab dropdown
+                    if (tabType === 'advanced') {
+                        advancedDropdown.classList.add('expanded');
+                    } else {
+                        advancedDropdown.classList.remove('expanded');
+                    }
+                });
+            });
+        }
+/* ===== BATCH 4 START ===== */
+        // Form Handler Initialization
+        function initializeFormHandlers() {
+            // Toggle functionality for toggle groups
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('toggle-option')) {
+                    // Remove active from siblings
+                    const siblings = e.target.parentNode.querySelectorAll('.toggle-option');
+                    siblings.forEach(option => {
+                        option.classList.remove('active');
+                    });
+
+                    // Add active to clicked option
+                    e.target.classList.add('active');
+
+                    // Update hidden input value
+                    const hiddenInput = e.target.parentNode.parentNode.querySelector('input[type="hidden"]');
+                    if (hiddenInput) {
+                        hiddenInput.value = e.target.getAttribute('data-value');
+                    }
+                }
+            });
+
+            // Photo type button functionality
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.photo-type-btn')) {
+                    const clickedBtn = e.target.closest('.photo-type-btn');
+                    const photoValue = clickedBtn.getAttribute('data-value');
+
+                    // Remove active from all photo type buttons
+                    const allPhotoButtons = document.querySelectorAll('.photo-type-btn');
+                    allPhotoButtons.forEach(btn => btn.classList.remove('active'));
+
+                    // Add active to clicked button
+                    clickedBtn.classList.add('active');
+
+                    // Update hidden input
+                    const hiddenInput = document.getElementById('background-photo-type');
+                    if (hiddenInput) {
+                        hiddenInput.value = photoValue;
+                    }
+
+                    // Show/hide upload section
+                    const uploadSection = document.getElementById('upload-section');
+                    if (photoValue === 'upload-photo') {
+                        uploadSection.style.display = 'block';
+                    } else {
+                        uploadSection.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // File Upload Functionality
+        function initializeFileUpload() {
+            const fileUploadArea = document.querySelector('.file-upload-area');
+            const fileInput = document.getElementById('photo-upload');
+            const uploadedFileDisplay = document.getElementById('uploaded-file-display');
+
+            if (fileUploadArea) {
+                fileUploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('dragover');
+                });
+
+                fileUploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                });
+
+                fileUploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        fileInput.files = files;
+                        displayUploadedFile(files[0]);
+                    }
+                });
+            }
+
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        displayUploadedFile(this.files[0]);
+                    }
+                });
+            }
+        }
+
+        function displayUploadedFile(file) {
+            const uploadedFileDisplay = document.getElementById('uploaded-file-display');
+            if (uploadedFileDisplay) {
+                uploadedFileDisplay.innerHTML = `
+                    <div class="uploaded-file">
+                        ✅ ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
+                    </div>
+                `;
+            }
+        }
+
+        // Button Handler Initialization
+        function initializeButtonHandlers() {
+            // Enhanced vote button functionality with actual webhook integration
+            document.addEventListener('click', async function(e) {
+                if (e.target.classList.contains('vote-btn')) {
+                    const postId = e.target.getAttribute('data-post'); // "1" or "2"
+                    const voteType = e.target.getAttribute('data-vote'); // "up" or "down"
+
+                    // Check if this post has already been voted on (vote locking)
+                    const allVotesForPost = document.querySelectorAll(`[data-post="${postId}"]`);
+                    const hasBeenVoted = Array.from(allVotesForPost).some(btn => 
+                        btn.classList.contains('voted-up') || btn.classList.contains('voted-down')
+                    );
+
+                    if (hasBeenVoted) {
+                        showMessage(`You have already voted on Post ${postId}. Votes are locked once submitted.`, 'error');
+                        return;
+                    }
+
+                    // Get the correct record ID based on post number
+                    const recordId = postId === "1" ? currentSession.postA_recordId : currentSession.postB_recordId;
+
+                    if (!recordId) {
+                        console.error(`No Airtable record ID found for Post ${postId}`);
+                        showMessage(`Please generate Post ${postId} first before voting.`, 'error');
+                        return;
+                    }
+
+                    console.log(`Submitting ${voteType} vote for Post ${postId} (Record ID: ${recordId})`);
+
+                    // Update UI immediately for visual feedback
+                    if (voteType === 'up') {
+                        e.target.classList.add('voted-up');
+                    } else {
+                        e.target.classList.add('voted-down');
+                    }
+
+                    // Disable all vote buttons for this post to prevent multiple votes
+                    allVotesForPost.forEach(btn => {
+                        btn.style.opacity = '0.7';
+                        btn.style.cursor = 'not-allowed';
+                    });
+
+                    try {
+                        // Send vote to webhook - try JSON format first
+                        const voteData = {
+                            airtable_record_id: recordId,
+                            vote_type: voteType,
+                            post_number: postId
+                        };
+
+                        console.log('Sending vote data:', voteData);
+
+                        const response = await fetch('https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Edit-Votes', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(voteData)
+                        });
+
+                        if (!response.ok) {
+                            // If JSON failed, try form data format
+                            console.log('JSON format failed, trying form data...');
+                            
+                            const formData = new FormData();
+                            formData.append('airtable_record_id', recordId);
+                            formData.append('vote_type', voteType);
+                            formData.append('post_number', postId);
+
+                            const formResponse = await fetch('https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Edit-Votes', {
+                                method: 'POST',
+                                body: formData
+                            });
+
+                            if (!formResponse.ok) {
+                                throw new Error(`Vote webhook failed: ${formResponse.status} ${formResponse.statusText}`);
+                            }
+                        }
+
+                        console.log(`Vote successfully recorded for Post ${postId}: ${voteType}vote`);
+                        showMessage(`Thank you! Your ${voteType === 'up' ? 'upvote' : 'downvote'} for Post ${postId} has been recorded.`, 'success');
+
+                    } catch (error) {
+                        console.error('Error submitting vote:', error);
+                        
+                        // Revert UI changes on error
+                        e.target.classList.remove('voted-up', 'voted-down');
+                        allVotesForPost.forEach(btn => {
+                            btn.style.opacity = '1';
+                            btn.style.cursor = 'pointer';
+                        });
+
+                        showMessage(`Failed to record your vote for Post ${postId}. Please try again.`, 'error');
+                    }
+                }
+            });
+
+            // New Action Button Handlers
+            document.addEventListener('click', function(e) {
+                const postNumber = e.target.getAttribute('data-post-number');
+
+                if (e.target.classList.contains('format-btn')) {
+                    handleFormatChange(postNumber);
+                } else if (e.target.classList.contains('content-btn')) {
+                    handleContentChange(postNumber);
+                } else if (e.target.classList.contains('background-btn')) {
+                    handleBackgroundChange(postNumber);
+                } else if (e.target.classList.contains('edit-btn')) {
+                    handlePostEdit(postNumber);
+                }
+            });
+
+            // Main form submission handler
+            document.getElementById('generator-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await handleFormSubmission();
+            });
+        }
+
+        // Action Button Handlers
+        function handleFormatChange(postNumber) {
+            console.log(`Changing format for Post ${postNumber}`);
+            showMessage(`Format change for Post ${postNumber} - Coming soon!`, 'success');
+        }
+
+        function handleContentChange(postNumber) {
+            console.log(`Changing content for Post ${postNumber}`);
+            showMessage(`Content change for Post ${postNumber} - Coming soon!`, 'success');
+        }
+
+        function handleBackgroundChange(postNumber) {
+            console.log(`Changing background for Post ${postNumber}`);
+            showMessage(`Background change for Post ${postNumber} - Coming soon!`, 'success');
+        }
+
+        function handlePostEdit(postNumber) {
+            // Get the correct record ID for this specific post
+            const recordId = postNumber === "1" ? currentSession.postA_recordId : currentSession.postB_recordId;
+
+            if (!recordId) {
+                alert(`No record found for Post ${postNumber}. Please generate the post first.`);
+                console.error(`No Airtable record ID found for Post ${postNumber}`);
+                return;
+            }
+
+            console.log(`Opening editor for Post ${postNumber} with Record ID: ${recordId}`);
+
+            // Create URL with the specific record ID and minimal data
+            const params = new URLSearchParams();
+            params.append('airtable_record_id', recordId);
+            params.append('post_number', postNumber);
+            params.append('session_id', currentSession.sessionId);
+
+            // Redirect to the finalize webhook URL
+            const webhookUrl = 'https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Post-Finalize';
+            const fullUrl = `${webhookUrl}?${params.toString()}`;
+
+            console.log('Redirecting to finalize page:', fullUrl);
+
+            // Navigate to finalize page in same tab
+            window.location.href = fullUrl;
+        }
+
+        // Function to determine which webhook URL to use based on photo type
+        function getWebhookUrls(photoType) {
+            const baseUrls = {
+                postA: 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF',
+                postB: 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Post-B'
+            };
+
+            const uploadUrls = {
+                postA: 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Upload-Image',
+                postB: 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Upload-Image-Post-B'
+            };
+
+            if (photoType === 'upload-photo') {
+                return uploadUrls;
+            } else {
+                return baseUrls;
+            }
+        }
+
+        // Main Form Submission Handler with Airtable Integration
+        async function handleFormSubmission() {
+            // Clear any previous messages
+            document.getElementById('message-area').innerHTML = '';
+
+            const form = document.getElementById('generator-form');
+            const formData = new FormData(form);
+            const generateBtn = document.getElementById('generate-btn');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const loadingText = document.getElementById('loading-text');
+
+            // Get photo type to determine webhook URLs
+            const photoType = formData.get('background_photo_type');
+            const webhookUrls = getWebhookUrls(photoType);
+
+            // Store form data for edit functionality and Post B
+            lastFormData = {};
+            for (let [key, value] of formData.entries()) {
+                lastFormData[key] = value;
+            }
+
+            // Reset session data for new generation
+            currentSession.postA_recordId = null;
+            currentSession.postB_recordId = null;
+            currentSession.sessionId = Date.now().toString();
+
+            console.log('Starting new generation session:', currentSession.sessionId);
+
+            // Show loading state for entire process
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating Posts...';
+            loadingSpinner.style.display = 'block';
+            loadingText.textContent = 'Starting generation process...';
+
+            try {
+                // Step 1: Generate Post A
+                console.log('Generating Post A...');
+                console.log('Using webhook URL:', webhookUrls.postA);
+                updateStatus('A', 'generating');
+                loadingText.textContent = 'Generating Post A...';
+
+                const previewContent1 = document.getElementById('preview-content-1');
+                previewContent1.innerHTML = '<div style="color: #F2F2F2; text-align: center;">Generating Post A...</div>';
+
+                const responseA = await fetch(webhookUrls.postA, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!responseA.ok) {
+                    throw new Error(`Post A failed with status ${responseA.status}: ${responseA.statusText}`);
+                }
+
+                // Handle Post A JSON response and capture Airtable record ID
+                const dataA = await responseA.json();
+                console.log('Post A Response:', dataA);
+
+                if (!dataA.image_url) {
+                    throw new Error('No image URL received for Post A');
+                }
+
+                // Store Airtable record ID for Post A
+                if (dataA.airtable_record_id) {
+                    currentSession.postA_recordId = dataA.airtable_record_id;
+                    console.log('Post A Airtable Record ID stored:', dataA.airtable_record_id);
+                } else {
+                    console.warn('No Airtable record ID received for Post A');
+                }
+
+                const imageUrlA = dataA.image_url;
+                previewContent1.innerHTML = `
+                    <img src="${imageUrlA}"
+                         style="max-width: 100%; max-height: 400px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); object-fit: contain;"
+                         alt="Generated LinkedIn Post A">
+                `;
+
+                generatedContent.post1 = {
+                    imageUrl: imageUrlA,
+                    formData: lastFormData,
+                    airtableRecordId: dataA.airtable_record_id || null
+                };
+
+                updateStatus('A', 'complete');
+                showMessage('Post A generated successfully!', 'success');
+
+                // Step 2: Automatically generate Post B
+                console.log('Automatically generating Post B...');
+                console.log('Using webhook URL:', webhookUrls.postB);
+                updateStatus('B', 'generating');
+                loadingText.textContent = 'Generating Post B...';
+
+                const previewContent2 = document.getElementById('preview-content-2');
+                previewContent2.innerHTML = '<div style="color: #F2F2F2; text-align: center;">Generating Post B...</div>';
+
+                // Create new FormData for Post B (same data)
+                const formDataB = new FormData(form);
+
+                const responseB = await fetch(webhookUrls.postB, {
+                    method: 'POST',
+                    body: formDataB
+                });
+
+                if (!responseB.ok) {
+                    throw new Error(`Post B failed with status ${responseB.status}: ${responseB.statusText}`);
+                }
+
+                // Handle Post B JSON response and capture Airtable record ID
+                const dataB = await responseB.json();
+                console.log('Post B Response:', dataB);
+
+                if (!dataB.image_url) {
+                    throw new Error('No image URL received for Post B');
+                }
+
+                // Store Airtable record ID for Post B
+                if (dataB.airtable_record_id) {
+                    currentSession.postB_recordId = dataB.airtable_record_id;
+                    console.log('Post B Airtable Record ID stored:', dataB.airtable_record_id);
+                } else {
+                    console.warn('No Airtable record ID received for Post B');
+                }
+
+                const imageUrlB = dataB.image_url;
+                previewContent2.innerHTML = `
+                    <img src="${imageUrlB}"
+                         style="max-width: 100%; max-height: 400px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); object-fit: contain;"
+                         alt="Generated LinkedIn Post B">
+                `;
+
+                generatedContent.post2 = {
+                    imageUrl: imageUrlB,
+                    formData: lastFormData,
+                    airtableRecordId: dataB.airtable_record_id || null
+                };
+
+                updateStatus('B', 'complete');
+                showMessage('Both posts generated successfully!', 'success');
+
+                // Log session completion
+                console.log('Generation complete! Session data:', {
+                    sessionId: currentSession.sessionId,
+                    postA_recordId: currentSession.postA_recordId,
+                    postB_recordId: currentSession.postB_recordId
+                });
+
+            } catch (error) {
+                console.error('Error generating content:', error);
+
+                let errorMessage = 'Failed to generate content. ';
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage += 'Please check your internet connection and try again.';
+                } else if (error.message.includes('status 404')) {
+                    errorMessage += 'Webhook endpoint not found. Please check the URL configuration.';
+                } else if (error.message.includes('status 500')) {
+                    errorMessage += 'Server error occurred. Please try again in a few moments.';
+                } else {
+                    errorMessage += error.message;
+                }
+
+                // Show error in the appropriate preview
+                if (error.message.includes('Post A')) {
+                    document.getElementById('preview-content-1').innerHTML = `<div style="color: #f44336; text-align: center; padding: 20px;">${errorMessage}</div>`;
+                    updateStatus('A', 'waiting');
+                } else if (error.message.includes('Post B')) {
+                    document.getElementById('preview-content-2').innerHTML = `<div style="color: #f44336; text-align: center; padding: 20px;">${errorMessage}</div>`;
+                    updateStatus('B', 'waiting');
+                } else {
+                    // General error - show in both
+                    document.getElementById('preview-content-1').innerHTML = `<div style="color: #f44336; text-align: center; padding: 20px;">${errorMessage}</div>`;
+                    document.getElementById('preview-content-2').innerHTML = `<div style="color: #f44336; text-align: center; padding: 20px;">${errorMessage}</div>`;
+                    updateStatus('A', 'waiting');
+                    updateStatus('B', 'waiting');
+                }
+
+                showMessage(errorMessage, 'error');
+
+            } finally {
+                // Reset button state
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Both Posts';
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        // Utility Functions
+        function showMessage(message, type = 'error') {
+            const messageArea = document.getElementById('message-area');
+            messageArea.innerHTML = `
+                <div class="${type}-message">
+                    ${message}
+                </div>
+            `;
+
+            // Auto-remove message after 5 seconds
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 5000);
+        }
+
+        function updateStatus(postLetter, status) {
+            const statusElement = document.getElementById(`status-${postLetter.toLowerCase()}`);
+            statusElement.className = 'status-indicator';
+
+            switch(status) {
+                case 'generating':
+                    statusElement.classList.add('status-generating');
+                    statusElement.textContent = `Generating Post ${postLetter}...`;
+                    break;
+                case 'complete':
+                    statusElement.classList.add('status-complete');
+                    statusElement.textContent = `Post ${postLetter} Complete ✓`;
+                    break;
+                case 'waiting':
+                    statusElement.classList.add('status-waiting');
+                    statusElement.textContent = postLetter === 'A' ? 'Waiting to generate' : 'Waiting for Post A';
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
