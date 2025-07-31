@@ -988,6 +988,64 @@
         const GAS_PRICE_PER_GALLON = 3.20; // Current average gas price
         const TRAVEL_RATE_PER_MILE = 1.00; // Travel compensation per mile
 
+        // Plan pricing data
+        const planData = {
+            monthly: {
+                title: 'Monthly Plan',
+                price: '$650',
+                period: '/month',
+                annualCost: 7800,
+                savings: 'No long-term commitment',
+                badge: 'FLEXIBLE',
+                features: [
+                    '<strong>LinkedIn Content Generator</strong>',
+                    'Up to 750 post generations per month',
+                    'AI-powered content creation',
+                    'Professional image library access',
+                    'Custom branding and templates',
+                    '<strong>MIRA Chatbot Enhancements</strong>',
+                    'Additional security implementations',
+                    'Cost optimization configurations',
+                    'Performance monitoring & tuning',
+                    '<strong>Centralized Payment Hub</strong>',
+                    'No API key balance management',
+                    'Unified billing for all services',
+                    'Transparent usage reporting',
+                    '<strong>Support & Maintenance</strong>',
+                    'Business hours technical support',
+                    'Regular system updates',
+                    'Monthly check-in calls'
+                ]
+            },
+            annual: {
+                title: 'Annual Contract',
+                price: '$4,000',
+                period: '/year',
+                annualCost: 4000,
+                savings: 'Save $3,800 annually!',
+                badge: 'BEST VALUE',
+                features: [
+                    '<strong>LinkedIn Content Generator</strong>',
+                    'Up to 750 post generations per month',
+                    'AI-powered content creation',
+                    'Professional image library access',
+                    'Custom branding and templates',
+                    '<strong>MIRA Chatbot Enhancements</strong>',
+                    'Additional security implementations',
+                    'Cost optimization configurations',
+                    'Performance monitoring & tuning',
+                    '<strong>Centralized Payment Hub</strong>',
+                    'No API key balance management',
+                    'Unified billing for all services',
+                    'Transparent usage reporting',
+                    '<strong>Support & Maintenance</strong>',
+                    'Priority technical support',
+                    'Regular system updates',
+                    'Quarterly strategy sessions'
+                ]
+            }
+        };
+
         function updateCalculations() {
             // Get current values
             const posts = parseFloat(postsPerWeek.value);
@@ -1026,6 +1084,7 @@
 
             // Annualize savings for ROI calculation
             const annualizedSavings = weeks === 52 ? savedCost : (savedCost / weeks) * 52;
+            currentOperationalSavings = annualizedSavings;
 
             // Update displays
             manualTime.textContent = `${Math.round(totalManualHours)} hours`;
@@ -1047,18 +1106,64 @@
             savingsSubtitle.textContent = `saved ${periodText[weeks]}`;
 
             // Update ROI calculations
-            updateROICalculations(annualizedSavings);
+            updateROICalculations();
         }
 
-        function updateROICalculations(annualSavings) {
-            const annualInvestment = 4000; // Annual contract price
-            const netBenefit = annualSavings - annualInvestment;
-            const paybackMonthsCalc = annualInvestment / (annualSavings / 12);
+        function updateROICalculations() {
+            const planCost = planData[currentPlan].annualCost;
+            const netBenefit = currentOperationalSavings - planCost;
+            const paybackMonthsCalc = planCost / (currentOperationalSavings / 12);
 
-            roiOperational.textContent = `+${Math.round(annualSavings).toLocaleString()}`;
+            roiOperational.textContent = `+${Math.round(currentOperationalSavings).toLocaleString()}`;
+            roiInvestmentCost.textContent = `-${planCost.toLocaleString()}`;
             roiNet.textContent = `${netBenefit >= 0 ? '+' : ''}${Math.round(netBenefit).toLocaleString()}`;
             roiNet.className = `roi-value ${netBenefit >= 0 ? 'roi-positive' : 'roi-negative'}`;
             paybackMonths.textContent = `${paybackMonthsCalc.toFixed(1)} months`;
+            selectedPlanText.textContent = planData[currentPlan].title;
+            
+            // Update time saved in ROI section
+            const annualTimeSaved = currentOperationalSavings / 40; // Assuming $40/hour average
+            roiTimeSaved.textContent = Math.round(annualTimeSaved);
+        }
+
+        function updatePricingDisplay() {
+            const plan = planData[currentPlan];
+            
+            planTitle.textContent = plan.title;
+            planPrice.innerHTML = `${plan.price}<span class="price-period">${plan.period}</span>`;
+            planSavings.textContent = plan.savings;
+            valueBadge.textContent = plan.badge;
+
+            // Update features list
+            const featuresContainer = document.querySelector('.pricing-features');
+            if (featuresContainer) {
+                featuresContainer.innerHTML = '';
+                
+                plan.features.forEach(feature => {
+                    const li = document.createElement('li');
+                    if (feature.startsWith('<strong>')) {
+                        li.innerHTML = feature;
+                    } else {
+                        li.innerHTML = feature;
+                        li.style.marginLeft = '20px';
+                        li.style.fontSize = '0.9em';
+                        li.style.color = '#666';
+                    }
+                    featuresContainer.appendChild(li);
+                });
+            }
+
+            // Update button states
+            monthlyBtn.classList.toggle('active', currentPlan === 'monthly');
+            annualBtn.classList.toggle('active', currentPlan === 'annual');
+
+            // Update ROI calculations with new plan
+            updateROICalculations();
+        }
+
+        function selectPlan(plan) {
+            currentPlan = plan;
+            updatePricingDisplay();
         }
 
         function updateLunchAndLearnCalculations() {
@@ -1090,9 +1195,20 @@
         automatedMinutes.addEventListener('input', updateCalculations);
         timePeriod.addEventListener('change', updateCalculations);
 
+        // Plan selection event listeners
+        monthlyBtn.addEventListener('click', () => selectPlan('monthly'));
+        annualBtn.addEventListener('click', () => selectPlan('annual'));
+
         // Lunch and Learn event listeners
         distanceTraveled.addEventListener('input', updateLunchAndLearnCalculations);
         sessionLength.addEventListener('input', updateLunchAndLearnCalculations);
+
+        // Initialize calculations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCalculations();
+            updatePricingDisplay();
+            updateLunchAndLearnCalculations();
+        });
 
     </script>
 </body>
