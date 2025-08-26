@@ -56,6 +56,49 @@
             color: #2c3a6b;
         }
 
+        .trial-banner {
+            background: linear-gradient(135deg, #F5B800 0%, #e6a600 100%);
+            color: #2c3a6b;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(245, 184, 0, 0.3);
+        }
+
+        .trial-banner h2 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .trial-banner p {
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .trial-cta-btn {
+            background: #2c3a6b;
+            color: #ffffff;
+            border: none;
+            padding: 20px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 6px 20px rgba(44, 58, 107, 0.3);
+        }
+
+        .trial-cta-btn:hover {
+            background: #1e2859;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(44, 58, 107, 0.4);
+        }
+
         .tools-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
@@ -223,6 +266,69 @@
             opacity: 0.8;
         }
 
+        .pricing-preview {
+            background: linear-gradient(135deg, #2c3a6b 0%, #3a4b7a 100%);
+            color: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 60px 0;
+            box-shadow: 0 10px 30px rgba(44, 58, 107, 0.3);
+        }
+
+        .pricing-preview h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #F5B800;
+        }
+
+        .price-highlight {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #ffffff;
+        }
+
+        .pricing-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .feature-group {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-group h3 {
+            color: #F5B800;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #F5B800;
+            font-weight: bold;
+        }
+
         .footer {
             text-align: center;
             margin-top: 80px;
@@ -273,6 +379,31 @@
             color: #ffffff;
         }
 
+        /* Trial Status Indicators */
+        .trial-status {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #F5B800;
+            color: #2c3a6b;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(245, 184, 0, 0.3);
+            display: none;
+            z-index: 999;
+        }
+
+        .trial-status.active {
+            display: block;
+        }
+
+        .trial-status.expired {
+            background: #ff6b6b;
+            color: #ffffff;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px 15px;
@@ -315,6 +446,24 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 20px;
             }
+
+            .pricing-features {
+                grid-template-columns: 1fr;
+            }
+
+            .trial-status {
+                position: static;
+                margin: 20px auto;
+                width: fit-content;
+            }
+
+            .trial-banner h2 {
+                font-size: 1.8em;
+            }
+
+            .price-highlight {
+                font-size: 2.5em;
+            }
         }
 
         @media (max-width: 480px) {
@@ -325,6 +474,11 @@
             .tool-features {
                 font-size: 0.95em;
             }
+
+            .trial-cta-btn {
+                padding: 15px 30px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -333,15 +487,26 @@
         <div class="nav-menu">
             <a href="/" class="nav-link active">Home</a>
             <a href="/content-generator.html" class="nav-link">Content Generator</a>
-            <a href="/savings-calculator.html" class="nav-link">Savings Calculator</a>
         </div>
     </nav>
+
+    <!-- Trial Status Indicator -->
+    <div class="trial-status" id="trial-status">
+        <!-- Will be populated by JavaScript -->
+    </div>
 
     <div class="container">
         <div class="header">
             <img src="assets/logo.png" alt="Manufacturing Works Logo" class="logo">
             <h1>AI-Powered Business Solutions</h1>
             <p>Transform your manufacturing business with cutting-edge automation tools designed specifically for Wyoming's industrial landscape</p>
+        </div>
+
+        <!-- Free Trial Call-to-Action Banner -->
+        <div class="trial-banner">
+            <h2>🚀 Start Your Free 14-Day Trial</h2>
+            <p>Get unlimited access to professional LinkedIn content creation. No credit card required.</p>
+            <button class="trial-cta-btn" onclick="startFreeTrial()">Start Free Trial Now</button>
         </div>
 
         <div class="tools-grid">
@@ -358,23 +523,7 @@
                     <li>Wyoming manufacturing industry expertise</li>
                 </ul>
                 
-                <a href="content-generator.html" class="tool-button primary">Launch Content Generator</a>
-            </div>
-
-            <div class="tool-card">
-                <div class="tool-icon">💰</div>
-                <h2>Automation Savings Calculator</h2>
-                <p class="tool-description">Discover exactly how much time and money your business could save by automating content creation processes.</p>
-                
-                <ul class="tool-features">
-                    <li>Calculate operational savings in real-time</li>
-                    <li>Compare manual vs. automated workflows</li>
-                    <li>ROI analysis and payback period</li>
-                    <li>Multiple investment package options</li>
-                    <li>Customizable time and cost parameters</li>
-                </ul>
-                
-                <a href="savings-calculator.html" class="tool-button">Calculate Your Savings</a>
+                <a href="content-generator.html" class="tool-button primary" id="content-generator-btn">Launch Content Generator</a>
             </div>
         </div>
 
@@ -392,8 +541,8 @@
                     <div class="stat-label">Time Savings</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">$3K+</div>
-                    <div class="stat-label">Annual Operational Savings</div>
+                    <div class="stat-number">14</div>
+                    <div class="stat-label">Days Free Trial</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">100%</div>
@@ -402,9 +551,204 @@
             </div>
         </div>
 
+        <!-- Pricing Preview Section -->
+        <div class="pricing-preview">
+            <h2>After Your Free Trial</h2>
+            <div class="price-highlight">$300<span style="font-size: 0.4em; opacity: 0.8;">/month</span></div>
+            <p style="font-size: 1.2em; margin-bottom: 30px; opacity: 0.9;">
+                Complete AI automation solution for your manufacturing business
+            </p>
+            
+            <div class="pricing-features">
+                <div class="feature-group">
+                    <h3>🚀 LinkedIn Content Generator</h3>
+                    <ul class="feature-list">
+                        <li>Unlimited post generations</li>
+                        <li>AI-powered content creation</li>
+                        <li>Professional image library access</li>
+                        <li>Custom branding and templates</li>
+                        <li>Manufacturing industry expertise</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-group">
+                    <h3>🤖 MIRA Chatbot Enhancements</h3>
+                    <ul class="feature-list">
+                        <li>Enhanced security implementations</li>
+                        <li>Cost optimization configurations</li>
+                        <li>Performance monitoring & tuning</li>
+                        <li>Custom integrations</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-group">
+                    <h3>💳 Centralized Payment Hub</h3>
+                    <ul class="feature-list">
+                        <li>No API key balance management</li>
+                        <li>Unified billing for all services</li>
+                        <li>Transparent usage reporting</li>
+                        <li>Automated cost tracking</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-group">
+                    <h3>🛠️ Support & Maintenance</h3>
+                    <ul class="feature-list">
+                        <li>Priority technical support</li>
+                        <li>Regular system updates</li>
+                        <li>Quarterly strategy sessions</li>
+                        <li>24/7 system monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <div class="footer">
             <p>&copy; 2025 Manufacturing Works. Empowering Wyoming's manufacturing future through intelligent automation.</p>
         </div>
     </div>
+
+    <script>
+        // Trial Management System
+        class TrialManager {
+            constructor() {
+                this.TRIAL_DURATION = 14; // days
+                this.STORAGE_KEY = 'mw_trial_data';
+                this.init();
+            }
+
+            init() {
+                this.updateTrialStatus();
+                this.updateUI();
+            }
+
+            startTrial() {
+                const trialData = {
+                    startDate: new Date().toISOString(),
+                    isActive: true,
+                    hasStarted: true
+                };
+                localStorage.setItem(this.STORAGE_KEY, JSON.stringify(trialData));
+                
+                // Show success message
+                this.showMessage('🎉 Your free trial has started! You now have 14 days of unlimited access.', 'success');
+                
+                // Update UI
+                this.updateTrialStatus();
+                this.updateUI();
+                
+                // Redirect to content generator
+                setTimeout(() => {
+                    window.location.href = 'content-generator.html';
+                }, 2000);
+            }
+
+            getTrialData() {
+                const stored = localStorage.getItem(this.STORAGE_KEY);
+                return stored ? JSON.parse(stored) : null;
+            }
+
+            getTrialStatus() {
+                const trialData = this.getTrialData();
+                
+                if (!trialData || !trialData.hasStarted) {
+                    return { status: 'not_started', daysLeft: this.TRIAL_DURATION };
+                }
+
+                const startDate = new Date(trialData.startDate);
+                const now = new Date();
+                const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+                const daysLeft = Math.max(0, this.TRIAL_DURATION - daysPassed);
+
+                if (daysLeft > 0) {
+                    return { status: 'active', daysLeft, daysPassed };
+                } else {
+                    return { status: 'expired', daysLeft: 0, daysPassed };
+                }
+            }
+
+            updateTrialStatus() {
+                const status = this.getTrialStatus();
+                const statusElement = document.getElementById('trial-status');
+                
+                if (status.status === 'active') {
+                    statusElement.textContent = `Free Trial: ${status.daysLeft} days left`;
+                    statusElement.className = 'trial-status active';
+                } else if (status.status === 'expired') {
+                    statusElement.textContent = 'Trial Expired - Subscribe to Continue';
+                    statusElement.className = 'trial-status active expired';
+                } else {
+                    statusElement.className = 'trial-status';
+                }
+            }
+
+            updateUI() {
+                const status = this.getTrialStatus();
+                const trialButton = document.querySelector('.trial-cta-btn');
+                const contentGeneratorBtn = document.getElementById('content-generator-btn');
+
+                if (status.status === 'not_started') {
+                    trialButton.textContent = 'Start Free Trial Now';
+                    trialButton.onclick = () => this.startTrial();
+                } else if (status.status === 'active') {
+                    trialButton.textContent = 'Continue to Content Generator';
+                    trialButton.onclick = () => window.location.href = 'content-generator.html';
+                    contentGeneratorBtn.textContent = 'Launch Content Generator (Trial Active)';
+                } else if (status.status === 'expired') {
+                    trialButton.textContent = 'Subscribe to Continue';
+                    trialButton.onclick = () => this.showSubscriptionModal();
+                    contentGeneratorBtn.textContent = 'Subscribe to Access';
+                    contentGeneratorBtn.onclick = (e) => {
+                        e.preventDefault();
+                        this.showSubscriptionModal();
+                    };
+                }
+            }
+
+            showSubscriptionModal() {
+                // This will be implemented when we add Stripe checkout
+                alert('Subscription checkout coming soon!\n\nYour trial has expired. The subscription system will be activated shortly to continue using the content generator.');
+            }
+
+            showMessage(message, type = 'info') {
+                // Create and show a temporary message
+                const messageDiv = document.createElement('div');
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: ${type === 'success' ? '#4CAF50' : '#2c3a6b'};
+                    color: white;
+                    padding: 20px 30px;
+                    border-radius: 10px;
+                    font-size: 16px;
+                    font-weight: 500;
+                    text-align: center;
+                    max-width: 400px;
+                    z-index: 10000;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                `;
+                messageDiv.textContent = message;
+                document.body.appendChild(messageDiv);
+
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 3000);
+            }
+        }
+
+        // Initialize trial manager when page loads
+        let trialManager;
+        document.addEventListener('DOMContentLoaded', function() {
+            trialManager = new TrialManager();
+            console.log('Manufacturing Works - Trial System Initialized');
+        });
+
+        // Global function for the trial button
+        function startFreeTrial() {
+            trialManager.startTrial();
+        }
+    </script>
 </body>
 </html>
