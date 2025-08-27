@@ -310,6 +310,73 @@
             font-weight: bold;
         }
 
+        /* Tooltip Styles */
+        .tooltip-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tooltip-icon {
+            width: 18px;
+            height: 18px;
+            background: #e8e8e8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: help;
+            font-size: 11px;
+            color: #2c3a6b;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .tooltip-icon:hover {
+            background: #F5B800;
+            color: #2c3a6b;
+        }
+
+        .tooltip-text {
+            position: absolute;
+            top: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3a6b;
+            color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.3;
+            max-width: 300px;
+            width: max-content;
+            box-shadow: 0 6px 20px rgba(44, 58, 107, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            white-space: normal;
+            text-align: left;
+        }
+
+        .tooltip-text::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: #2c3a6b;
+        }
+
+        .tooltip-icon:hover .tooltip-text {
+            opacity: 1;
+            visibility: visible;
+        }
+
         .form-row {
             display: flex;
             gap: 20px;
@@ -708,6 +775,39 @@
             box-shadow: 0 2px 8px rgba(44, 58, 107, 0.1);
         }
 
+        .format-btn {
+            background: #F5B800;
+            color: #2c3a6b;
+        }
+
+        .format-btn:hover {
+            background: #e6a600;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 184, 0, 0.3);
+        }
+
+        .content-btn {
+            background: #e8e8e8;
+            color: #2c3a6b;
+        }
+
+        .content-btn:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 58, 107, 0.2);
+        }
+
+        .background-btn {
+            background: #2c3a6b;
+            color: #ffffff;
+        }
+
+        .background-btn:hover {
+            background: #1e2859;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 58, 107, 0.3);
+        }
+
         .edit-btn {
             background: #4CAF50;
             color: #ffffff;
@@ -841,10 +941,22 @@
             <div class="tab-content" id="advanced-content">
                 <div class="advanced-dropdown" id="advanced-dropdown">
                     <div class="form-section">
-                        <h4><span class="section-icon">🎯</span>Content Focus</h4>
+                        <div class="tooltip-container">
+                            <h4><span class="section-icon">🎯</span>Content Focus</h4>
+                            <div class="tooltip-icon">?
+                                <div class="tooltip-text">Choose the main topic and style for your LinkedIn post content</div>
+                            </div>
+                        </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Industry Topic</label>
+                                <label>
+                                    Industry Topic
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Select the manufacturing topic that aligns with your message goals</div>
+                                        </div>
+                                    </div>
+                                </label>
                                 <div class="toggle-group">
                                     <div class="toggle-option active" data-value="random">Random</div>
                                     <div class="toggle-option" data-value="manufacturing-trends">Manufacturing Trends</div>
@@ -857,7 +969,14 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Content Type</label>
+                                <label>
+                                    Content Type
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Choose the format that best fits your communication objective</div>
+                                        </div>
+                                    </div>
+                                </label>
                                 <select name="content_type">
                                     <option value="random">Random</option>
                                     <option value="motivational-quote">Motivational Quote</option>
@@ -868,7 +987,14 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Tone</label>
+                                <label>
+                                    Tone
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Match your brand voice: Inspirational for motivation, Informative for education, Expert for credibility</div>
+                                        </div>
+                                    </div>
+                                </label>
                                 <select name="tone">
                                     <option value="random">Random</option>
                                     <option value="inspirational">Inspirational</option>
@@ -880,10 +1006,22 @@
                     </div>
 
                     <div class="form-section">
-                        <h4><span class="section-icon">🎨</span>Format</h4>
+                        <div class="tooltip-container">
+                            <h4><span class="section-icon">🎨</span>Format</h4>
+                            <div class="tooltip-icon">?
+                                <div class="tooltip-text">Choose visual styling that matches your brand and maximizes engagement</div>
+                            </div>
+                        </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Post Format</label>
+                                <label>
+                                    Post Format
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Select the visual layout style for your post design</div>
+                                        </div>
+                                    </div>
+                                </label>
                                 <select name="post_format">
                                     <option value="random">Random</option>
                                     <option value="quote-template-bg">Quote Template</option>
@@ -895,10 +1033,22 @@
                     </div>
 
                     <div class="form-section">
-                        <h4><span class="section-icon">📍</span>Audience Profile</h4>
+                        <div class="tooltip-container">
+                            <h4><span class="section-icon">📍</span>Audience Profile</h4>
+                            <div class="tooltip-icon">?
+                                <div class="tooltip-text">Target your ideal audience with location and industry-specific messaging</div>
+                            </div>
+                        </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Target Audience</label>
+                                <label>
+                                    Target Audience
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Select the combination that best describes your intended readers</div>
+                                        </div>
+                                    </div>
+                                </label>
                                 <select name="audience_profile">
                                     <option value="random">Random</option>
                                     <option value="wyoming-manufacturers">Wyoming Manufacturers</option>
@@ -910,7 +1060,14 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Call-to-Action</label>
+                                <label>
+                                    Call-to-Action
+                                    <div class="tooltip-container">
+                                        <div class="tooltip-icon">?
+                                            <div class="tooltip-text">Choose the action you want readers to take after viewing your post</div>
+                                        </div>
+                                    </div>
+                                </label>
                                 <select name="cta_style">
                                     <option value="random">Random</option>
                                     <option value="learn-more">Learn More</option>
@@ -921,3 +1078,804 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Describe What You Want Tab Content -->
+            <div class="tab-content" id="describe-content">
+                <div class="describe-content">
+                    <textarea
+                        class="describe-textarea"
+                        name="user_description"
+                        placeholder="Describe the type of LinkedIn post you want to create. Be as specific or general as you'd like - for example: 'A motivational post about manufacturing innovation in Wyoming' or 'Something about workforce development with an inspiring tone'..."
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- Universal Background Photo Type Section -->
+            <div class="universal-photo-section">
+                <div class="tooltip-container">
+                    <h4 style="color: #2c3a6b; margin: 25px 0 15px 0; font-size: 1.1em; display: flex; align-items: center; gap: 10px; font-weight: 600;">
+                        <span class="section-icon" style="width: 20px; height: 20px; background: #F5B800; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #2c3a6b; font-weight: bold;">🖼️</span>
+                        Background Photo
+                    </h4>
+                    <div class="tooltip-icon">?
+                        <div class="tooltip-text">Choose your image source: curated database for quick selection, AI for custom visuals, or upload your own brand images</div>
+                    </div>
+                </div>
+
+                <div class="photo-type-buttons">
+                    <button type="button" class="photo-type-btn active" data-value="photo-database">
+                        <span class="photo-icon">📸</span>
+                        <span class="photo-label">Photo Database</span>
+                        <span class="photo-desc">Use our curated photos</span>
+                    </button>
+                    <button type="button" class="photo-type-btn" data-value="ai-generated">
+                        <span class="photo-icon">🤖</span>
+                        <span class="photo-label">AI Generated</span>
+                        <span class="photo-desc">Create custom image</span>
+                    </button>
+                    <button type="button" class="photo-type-btn" data-value="upload-photo">
+                        <span class="photo-icon">📤</span>
+                        <span class="photo-label">Upload Photo</span>
+                        <span class="photo-desc">Use your own image</span>
+                    </button>
+                </div>
+
+                <input type="hidden" name="background_photo_type" id="background-photo-type" value="photo-database">
+
+                <div class="form-group" id="upload-section" style="display: none; margin-top: 20px;">
+                    <div class="file-upload-area" onclick="document.getElementById('photo-upload').click()">
+                        <p>📤 Click to upload or drag & drop your photo here</p>
+                        <small>Supported formats: JPG, PNG, GIF (Max 10MB)</small>
+                    </div>
+                    <input type="file" id="photo-upload" class="file-input" name="uploaded_photo" accept="image/*">
+                    <div id="uploaded-file-display"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="generate-btn" id="generate-btn">Generate Both Posts</button>
+        </form>
+
+        <div id="message-area"></div>
+
+        <!-- Content Grid with Post Previews -->
+        <div class="content-grid">
+            <!-- Post Preview A -->
+            <div class="preview-section">
+                <h3>Post A</h3>
+                <div class="status-indicator status-waiting" id="status-a">Waiting to generate</div>
+                <div class="preview-placeholder" id="preview-content-1">
+                    Click "Generate Both Posts" to start
+                </div>
+                <div class="vote-buttons">
+                    <button type="button" class="vote-btn upvote" data-post="1" data-vote="up">👍</button>
+                    <button type="button" class="vote-btn downvote" data-post="1" data-vote="down">👎</button>
+                </div>
+
+                <div class="post-action-buttons">
+                    <button type="button" class="action-btn format-btn" data-post-number="1">Change Format</button>
+                    <button type="button" class="action-btn content-btn" data-post-number="1">Change Text Content</button>
+                    <button type="button" class="action-btn background-btn" data-post-number="1">Change Background</button>
+                    <button type="button" class="action-btn edit-btn" data-post-number="1">Go to Post Editor</button>
+                </div>
+            </div>
+
+            <!-- Post Preview B -->
+            <div class="preview-section">
+                <h3>Post B</h3>
+                <div class="status-indicator status-waiting" id="status-b">Waiting for Post A</div>
+                <div class="preview-placeholder" id="preview-content-2">
+                    Post B will generate automatically after Post A
+                </div>
+                <div class="vote-buttons">
+                    <button type="button" class="vote-btn upvote" data-post="2" data-vote="up">👍</button>
+                    <button type="button" class="vote-btn downvote" data-post="2" data-vote="down">👎</button>
+                </div>
+
+                <div class="post-action-buttons">
+                    <button type="button" class="action-btn format-btn" data-post-number="2">Change Format</button>
+                    <button type="button" class="action-btn content-btn" data-post-number="2">Change Text Content</button>
+                    <button type="button" class="action-btn background-btn" data-post-number="2">Change Background</button>
+                    <button type="button" class="action-btn edit-btn" data-post-number="2">Go to Post Editor</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading-spinner">
+            <div class="spinner">⚙️</div>
+            <span id="loading-text">Generating your content...</span>
+        </div>
+    </div>
+
+    <script>
+        // Trial Management System (shared with other pages)
+        class TrialManager {
+            constructor() {
+                this.TRIAL_DURATION = 14; // days
+                this.STORAGE_KEY = 'mw_trial_data';
+                this.init();
+            }
+
+            init() {
+                this.updateTrialStatus();
+            }
+
+            getTrialData() {
+                const stored = localStorage.getItem(this.STORAGE_KEY);
+                return stored ? JSON.parse(stored) : null;
+            }
+
+            getTrialStatus() {
+                const trialData = this.getTrialData();
+                
+                if (!trialData || !trialData.hasStarted) {
+                    return { status: 'not_started', daysLeft: this.TRIAL_DURATION };
+                }
+
+                const startDate = new Date(trialData.startDate);
+                const now = new Date();
+                const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+                const daysLeft = Math.max(0, this.TRIAL_DURATION - daysPassed);
+
+                if (daysLeft > 0) {
+                    return { status: 'active', daysLeft, daysPassed };
+                } else {
+                    return { status: 'expired', daysLeft: 0, daysPassed };
+                }
+            }
+
+            checkAccess() {
+                const status = this.getTrialStatus();
+                
+                if (status.status === 'expired') {
+                    this.showAccessDenied();
+                    return false;
+                } else if (status.status === 'not_started') {
+                    // Redirect to homepage to start trial
+                    window.location.href = 'index.html';
+                    return false;
+                }
+                return true;
+            }
+
+            showAccessDenied() {
+                document.getElementById('access-denied-overlay').classList.add('show');
+            }
+
+            updateTrialStatus() {
+                const status = this.getTrialStatus();
+                const statusBar = document.getElementById('trial-status-bar');
+                
+                if (status.status === 'active') {
+                    statusBar.innerHTML = `
+                        <h3>🎉 Free Trial Active</h3>
+                        <p>${status.daysLeft} days remaining of your 14-day trial</p>
+                    `;
+                    statusBar.className = 'trial-status-bar active';
+                } else if (status.status === 'expired') {
+                    statusBar.innerHTML = `
+                        <h3>⏰ Trial Expired</h3>
+                        <p>Subscribe now to continue using the content generator</p>
+                    `;
+                    statusBar.className = 'trial-status-bar active expired';
+                } else {
+                    statusBar.className = 'trial-status-bar';
+                }
+            }
+        }
+
+        // Store form data globally for edit functionality and Airtable integration
+        let lastFormData = {};
+        let generatedContent = {
+            post1: null,
+            post2: null
+        };
+
+        // Airtable session tracking - stores record IDs for both posts
+        let currentSession = {
+            sessionId: Date.now().toString(),
+            postA_recordId: null,
+            postB_recordId: null
+        };
+
+        // Initialize trial manager
+        let trialManager;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Manufacturing Works Content Generator loaded');
+            
+            // Initialize trial manager and check access
+            trialManager = new TrialManager();
+            
+            // Check if user has access before loading anything else
+            if (!trialManager.checkAccess()) {
+                return; // Stop execution if no access
+            }
+
+            initializeTabs();
+            initializeFormHandlers();
+            initializeFileUpload();
+            initializeButtonHandlers();
+
+            console.log('Post A Webhook URL:', 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF');
+            console.log('Post B Webhook URL:', 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Post-B');
+            console.log('Upload Image Webhook URL:', 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Upload-Image');
+            console.log('Session ID:', currentSession.sessionId);
+        });
+
+        // Global functions for access denied overlay
+        function startSubscription() {
+            // TODO: Implement Stripe checkout
+            console.log('Starting Stripe subscription process...');
+            alert('Stripe integration coming soon!\n\nThis will redirect to secure Stripe checkout for $300/month subscription.');
+        }
+
+        function goToHomepage() {
+            window.location.href = 'index.html';
+        }
+
+        // Tab System Functionality
+        function initializeTabs() {
+            const tabItems = document.querySelectorAll('.tab-item');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const advancedDropdown = document.getElementById('advanced-dropdown');
+
+            tabItems.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabType = this.getAttribute('data-tab');
+
+                    // Remove active class from all tabs and contents
+                    tabItems.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    // Show corresponding content
+                    const targetContent = document.getElementById(tabType + '-content');
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+
+                    // Special handling for advanced tab dropdown
+                    if (tabType === 'advanced') {
+                        advancedDropdown.classList.add('expanded');
+                    } else {
+                        advancedDropdown.classList.remove('expanded');
+                    }
+                });
+            });
+        }
+
+        // Form Handler Initialization
+        function initializeFormHandlers() {
+            // Toggle functionality for toggle groups
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('toggle-option')) {
+                    // Remove active from siblings
+                    const siblings = e.target.parentNode.querySelectorAll('.toggle-option');
+                    siblings.forEach(option => {
+                        option.classList.remove('active');
+                    });
+
+                    // Add active to clicked option
+                    e.target.classList.add('active');
+
+                    // Update hidden input value
+                    const hiddenInput = e.target.parentNode.parentNode.querySelector('input[type="hidden"]');
+                    if (hiddenInput) {
+                        hiddenInput.value = e.target.getAttribute('data-value');
+                    }
+                }
+            });
+
+            // Photo type button functionality
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.photo-type-btn')) {
+                    const clickedBtn = e.target.closest('.photo-type-btn');
+                    const photoValue = clickedBtn.getAttribute('data-value');
+
+                    // Remove active from all photo type buttons
+                    const allPhotoButtons = document.querySelectorAll('.photo-type-btn');
+                    allPhotoButtons.forEach(btn => btn.classList.remove('active'));
+
+                    // Add active to clicked button
+                    clickedBtn.classList.add('active');
+
+                    // Update hidden input
+                    const hiddenInput = document.getElementById('background-photo-type');
+                    if (hiddenInput) {
+                        hiddenInput.value = photoValue;
+                    }
+
+                    // Show/hide upload section
+                    const uploadSection = document.getElementById('upload-section');
+                    if (photoValue === 'upload-photo') {
+                        uploadSection.style.display = 'block';
+                    } else {
+                        uploadSection.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // File Upload Functionality
+        function initializeFileUpload() {
+            const fileUploadArea = document.querySelector('.file-upload-area');
+            const fileInput = document.getElementById('photo-upload');
+
+            if (fileUploadArea) {
+                fileUploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('dragover');
+                });
+
+                fileUploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                });
+
+                fileUploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        fileInput.files = files;
+                        displayUploadedFile(files[0]);
+                    }
+                });
+            }
+
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        displayUploadedFile(this.files[0]);
+                    }
+                });
+            }
+        }
+
+        function displayUploadedFile(file) {
+            const uploadedFileDisplay = document.getElementById('uploaded-file-display');
+            if (uploadedFileDisplay) {
+                uploadedFileDisplay.innerHTML = `
+                    <div class="uploaded-file">
+                        ✅ ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
+                    </div>
+                `;
+            }
+        }
+
+        // Button Handler Initialization
+        function initializeButtonHandlers() {
+            // Enhanced vote button functionality with actual webhook integration
+            document.addEventListener('click', async function(e) {
+                if (e.target.classList.contains('vote-btn')) {
+                    // Check trial access first
+                    if (!trialManager.checkAccess()) {
+                        return;
+                    }
+
+                    const postId = e.target.getAttribute('data-post'); // "1" or "2"
+                    const voteType = e.target.getAttribute('data-vote'); // "up" or "down"
+
+                    // Check if this post has already been voted on (vote locking)
+                    const allVotesForPost = document.querySelectorAll(`[data-post="${postId}"]`);
+                    const hasBeenVoted = Array.from(allVotesForPost).some(btn => 
+                        btn.classList.contains('voted-up') || btn.classList.contains('voted-down')
+                    );
+
+                    if (hasBeenVoted) {
+                        showMessage(`You have already voted on Post ${postId}. Votes are locked once submitted.`, 'error');
+                        return;
+                    }
+
+                    // Get the correct record ID based on post number
+                    const recordId = postId === "1" ? currentSession.postA_recordId : currentSession.postB_recordId;
+
+                    if (!recordId) {
+                        console.error(`No Airtable record ID found for Post ${postId}`);
+                        showMessage(`Please generate Post ${postId} first before voting.`, 'error');
+                        return;
+                    }
+
+                    console.log(`Submitting ${voteType} vote for Post ${postId} (Record ID: ${recordId})`);
+
+                    // Update UI immediately for visual feedback
+                    if (voteType === 'up') {
+                        e.target.classList.add('voted-up');
+                    } else {
+                        e.target.classList.add('voted-down');
+                    }
+
+                    // Disable all vote buttons for this post to prevent multiple votes
+                    allVotesForPost.forEach(btn => {
+                        btn.style.opacity = '0.7';
+                        btn.style.cursor = 'not-allowed';
+                    });
+
+                    try {
+                        // Send vote to webhook
+                        const voteData = {
+                            airtable_record_id: recordId,
+                            vote_type: voteType,
+                            post_number: postId
+                        };
+
+                        console.log('Sending vote data:', voteData);
+
+                        const response = await fetch('https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Edit-Votes', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(voteData)
+                        });
+
+                        if (!response.ok) {
+                            // If JSON failed, try form data format
+                            console.log('JSON format failed, trying form data...');
+                            
+                            const formData = new FormData();
+                            formData.append('airtable_record_id', recordId);
+                            formData.append('vote_type', voteType);
+                            formData.append('post_number', postId);
+
+                            const formResponse = await fetch('https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Edit-Votes', {
+                                method: 'POST',
+                                body: formData
+                            });
+
+                            if (!formResponse.ok) {
+                                throw new Error(`Vote webhook failed: ${formResponse.status} ${formResponse.statusText}`);
+                            }
+                        }
+
+                        console.log(`Vote successfully recorded for Post ${postId}: ${voteType}vote`);
+                        showMessage(`Thank you! Your ${voteType === 'up' ? 'upvote' : 'downvote'} for Post ${postId} has been recorded.`, 'success');
+
+                    } catch (error) {
+                        console.error('Error submitting vote:', error);
+                        
+                        // Revert UI changes on error
+                        e.target.classList.remove('voted-up', 'voted-down');
+                        allVotesForPost.forEach(btn => {
+                            btn.style.opacity = '1';
+                            btn.style.cursor = 'pointer';
+                        });
+
+                        showMessage(`Failed to record your vote for Post ${postId}. Please try again.`, 'error');
+                    }
+                }
+            });
+
+            // Action Button Handlers
+            document.addEventListener('click', function(e) {
+                const postNumber = e.target.getAttribute('data-post-number');
+
+                if (e.target.classList.contains('format-btn')) {
+                    handleFormatChange(postNumber);
+                } else if (e.target.classList.contains('content-btn')) {
+                    handleContentChange(postNumber);
+                } else if (e.target.classList.contains('background-btn')) {
+                    handleBackgroundChange(postNumber);
+                } else if (e.target.classList.contains('edit-btn')) {
+                    handlePostEdit(postNumber);
+                }
+            });
+
+            // Main form submission handler
+            document.getElementById('generator-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Check trial access before form submission
+                if (!trialManager.checkAccess()) {
+                    return;
+                }
+                
+                await handleFormSubmission();
+            });
+        }
+
+        // Action Button Handlers
+        function handleFormatChange(postNumber) {
+            if (!trialManager.checkAccess()) return;
+            console.log(`Changing format for Post ${postNumber}`);
+            showMessage(`Format change for Post ${postNumber} - Coming soon!`, 'success');
+        }
+
+        function handleContentChange(postNumber) {
+            if (!trialManager.checkAccess()) return;
+            console.log(`Changing content for Post ${postNumber}`);
+            showMessage(`Content change for Post ${postNumber} - Coming soon!`, 'success');
+        }
+
+        function handleBackgroundChange(postNumber) {
+            if (!trialManager.checkAccess()) return;
+            console.log(`Changing background for Post ${postNumber}`);
+            showMessage(`Background change for Post ${postNumber} - Coming soon!`, 'success');
+        }
+
+        // Enhanced handlePostEdit function to pass image URL and data via parameters
+        function handlePostEdit(postNumber) {
+            if (!trialManager.checkAccess()) return;
+            
+            // Get the correct record ID and generated content for this specific post
+            const recordId = postNumber === "1" ? currentSession.postA_recordId : currentSession.postB_recordId;
+            const postContent = postNumber === "1" ? generatedContent.post1 : generatedContent.post2;
+
+            if (!recordId || !postContent) {
+                alert(`No record found for Post ${postNumber}. Please generate the post first.`);
+                console.error(`No Airtable record ID or content found for Post ${postNumber}`);
+                return;
+            }
+
+            console.log(`Opening editor for Post ${postNumber} with Record ID: ${recordId}`);
+
+            // Create URL with all necessary data passed as parameters
+            const params = new URLSearchParams();
+            
+            // Essential data
+            params.append('airtable_record_id', recordId);
+            params.append('post_number', postNumber);
+            params.append('session_id', currentSession.sessionId);
+            params.append('image_url', postContent.imageUrl);
+            
+            // Add original form data for AI context
+            if (lastFormData) {
+                Object.keys(lastFormData).forEach(key => {
+                    if (lastFormData[key] && key !== 'uploaded_photo') { // Skip file uploads
+                        params.append(key, lastFormData[key]);
+                    }
+                });
+            }
+
+            // Navigate to finalize page with all data in URL
+            const finalizeUrl = `paste.html?${params.toString()}`;
+            
+            console.log('Redirecting to finalize page with parameters:', finalizeUrl);
+
+            // Navigate to finalize page in same tab
+            window.location.href = finalizeUrl;
+        }
+
+        // Function to determine which webhook URL to use based on photo type
+        function getWebhookUrls(photoType) {
+            const baseUrls = {
+                postA: 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF',
+                postB: 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Post-B'
+            };
+
+            const uploadUrls = {
+                postA: 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Upload-Image',
+                postB: 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Upload-Image-Post-B'
+            };
+
+            if (photoType === 'upload-photo') {
+                return uploadUrls;
+            } else {
+                return baseUrls;
+            }
+        }
+
+        // Main Form Submission Handler with Airtable Integration
+        async function handleFormSubmission() {
+            // Clear any previous messages
+            document.getElementById('message-area').innerHTML = '';
+
+            const form = document.getElementById('generator-form');
+            const formData = new FormData(form);
+            const generateBtn = document.getElementById('generate-btn');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const loadingText = document.getElementById('loading-text');
+
+            // Get photo type to determine webhook URLs
+            const photoType = formData.get('background_photo_type');
+            const webhookUrls = getWebhookUrls(photoType);
+
+            // Store form data for edit functionality and Post B
+            lastFormData = {};
+            for (let [key, value] of formData.entries()) {
+                lastFormData[key] = value;
+            }
+
+            // Reset session data for new generation
+            currentSession.postA_recordId = null;
+            currentSession.postB_recordId = null;
+            currentSession.sessionId = Date.now().toString();
+
+            console.log('Starting new generation session:', currentSession.sessionId);
+
+            // Show loading state for entire process
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating Posts...';
+            loadingSpinner.style.display = 'block';
+            loadingText.textContent = 'Starting generation process...';
+
+            try {
+                // Step 1: Generate Post A
+                console.log('Generating Post A...');
+                console.log('Using webhook URL:', webhookUrls.postA);
+                updateStatus('A', 'generating');
+                loadingText.textContent = 'Generating Post A...';
+
+                const previewContent1 = document.getElementById('preview-content-1');
+                previewContent1.innerHTML = '<div style="color: #ffffff; text-align: center;">Generating Post A...</div>';
+
+                const responseA = await fetch(webhookUrls.postA, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!responseA.ok) {
+                    throw new Error(`Post A failed with status ${responseA.status}: ${responseA.statusText}`);
+                }
+
+                // Handle Post A JSON response and capture Airtable record ID
+                const dataA = await responseA.json();
+                console.log('Post A Response:', dataA);
+
+                if (!dataA.image_url) {
+                    throw new Error('No image URL received for Post A');
+                }
+
+                // Store Airtable record ID for Post A
+                if (dataA.airtable_record_id) {
+                    currentSession.postA_recordId = dataA.airtable_record_id;
+                    console.log('Post A Airtable Record ID stored:', dataA.airtable_record_id);
+                } else {
+                    console.warn('No Airtable record ID received for Post A');
+                }
+
+                const imageUrlA = dataA.image_url;
+                previewContent1.innerHTML = `
+                    <img src="${imageUrlA}"
+                         style="max-width: 100%; max-height: 400px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); object-fit: contain;"
+                         alt="Generated LinkedIn Post A">
+                `;
+
+                generatedContent.post1 = {
+                    imageUrl: imageUrlA,
+                    formData: lastFormData,
+                    airtableRecordId: dataA.airtable_record_id || null
+                };
+
+                updateStatus('A', 'complete');
+                showMessage('Post A generated successfully!', 'success');
+
+                // Step 2: Automatically generate Post B
+                console.log('Automatically generating Post B...');
+                console.log('Using webhook URL:', webhookUrls.postB);
+                updateStatus('B', 'generating');
+                loadingText.textContent = 'Generating Post B...';
+
+                const previewContent2 = document.getElementById('preview-content-2');
+                previewContent2.innerHTML = '<div style="color: #ffffff; text-align: center;">Generating Post B...</div>';
+
+                // Create new FormData for Post B (same data)
+                const formDataB = new FormData(form);
+
+                const responseB = await fetch(webhookUrls.postB, {
+                    method: 'POST',
+                    body: formDataB
+                });
+
+                if (!responseB.ok) {
+                    throw new Error(`Post B failed with status ${responseB.status}: ${responseB.statusText}`);
+                }
+
+                // Handle Post B JSON response and capture Airtable record ID
+                const dataB = await responseB.json();
+                console.log('Post B Response:', dataB);
+
+                if (!dataB.image_url) {
+                    throw new Error('No image URL received for Post B');
+                }
+
+                // Store Airtable record ID for Post B
+                if (dataB.airtable_record_id) {
+                    currentSession.postB_recordId = dataB.airtable_record_id;
+                    console.log('Post B Airtable Record ID stored:', dataB.airtable_record_id);
+                } else {
+                    console.warn('No Airtable record ID received for Post B');
+                }
+
+                const imageUrlB = dataB.image_url;
+                previewContent2.innerHTML = `
+                    <img src="${imageUrlB}"
+                         style="max-width: 100%; max-height: 400px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); object-fit: contain;"
+                         alt="Generated LinkedIn Post B">
+                `;
+
+                generatedContent.post2 = {
+                    imageUrl: imageUrlB,
+                    formData: lastFormData,
+                    airtableRecordId: dataB.airtable_record_id || null
+                };
+
+                updateStatus('B', 'complete');
+                showMessage('Both posts generated successfully!', 'success');
+
+                // Log session completion
+                console.log('Generation complete! Session data:', {
+                    sessionId: currentSession.sessionId,
+                    postA_recordId: currentSession.postA_recordId,
+                    postB_recordId: currentSession.postB_recordId
+                });
+
+            } catch (error) {
+                console.error('Error generating content:', error);
+
+                let errorMessage = 'Failed to generate content. ';
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage += 'Please check your internet connection and try again.';
+                } else if (error.message.includes('status 404')) {
+                    errorMessage += 'Webhook endpoint not found. Please check the URL configuration.';
+                } else if (error.message.includes('status 500')) {
+                    errorMessage += 'Server error occurred. Please try again in a few moments.';
+                } else {
+                    errorMessage += error.message;
+                }
+
+                // Show error in the appropriate preview
+                if (error.message.includes('Post A')) {
+                    document.getElementById('preview-content-1').innerHTML = `<div style="color: #f44336; text-align: center; padding: 20px;">${errorMessage}</div>`;
+                    updateStatus('A', 'waiting');
+                } else if (error.message.includes('Post B')) {
+                    document.getElementById('preview-content-2').innerHTML = `<div style="color: #f44336; text-align: center; padding: 20px;">${errorMessage}</div>`;
+                    updateStatus('B', 'waiting');
+                } else {
+                    // General error - show in both
+                    document.getElementById('preview-content-1').innerHTML = `<div style="color: #f44336; text-align: center; padding: 20px;">${errorMessage}</div>`;
+                    document.getElementById('preview-content-2').innerHTML = `<div style="color: #f44336; text-align: center; padding: 20px;">${errorMessage}</div>`;
+                    updateStatus('A', 'waiting');
+                    updateStatus('B', 'waiting');
+                }
+
+                showMessage(errorMessage, 'error');
+
+            } finally {
+                // Reset button state
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Both Posts';
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        // Utility Functions
+        function showMessage(message, type = 'error') {
+            const messageArea = document.getElementById('message-area');
+            messageArea.innerHTML = `
+                <div class="${type}-message">
+                    ${message}
+                </div>
+            `;
+
+            // Auto-remove message after 5 seconds
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 5000);
+        }
+
+        function updateStatus(postLetter, status) {
+            const statusElement = document.getElementById(`status-${postLetter.toLowerCase()}`);
+            statusElement.className = 'status-indicator';
+
+            switch(status) {
+                case 'generating':
+                    statusElement.classList.add('status-generating');
+                    statusElement.textContent = `Generating Post ${postLetter}...`;
+                    break;
+                case 'complete':
+                    statusElement.classList.add('status-complete');
+                    statusElement.textContent = `Post ${postLetter} Complete ✓`;
+                    break;
+                case 'waiting':
+                    statusElement.classList.add('status-waiting');
+                    statusElement.textContent = postLetter === 'A' ? 'Waiting to generate' : 'Waiting for Post A';
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
