@@ -406,90 +406,6 @@
             color: #AAAAAA;
         }
 
-        /* Hashtag Manager */
-        .hashtag-input-section {
-            margin-bottom: 20px;
-        }
-
-        .hashtag-input {
-            width: 100%;
-            background: #404040;
-            border: 1px solid #555;
-            color: #FFFFFF;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .hashtag-input:focus {
-            outline: none;
-            border-color: #D98A29;
-        }
-
-        .hashtag-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            align-items: center;
-        }
-
-        .hashtag-count-input {
-            width: 60px;
-            background: #404040;
-            border: 1px solid #555;
-            color: #FFFFFF;
-            padding: 8px;
-            border-radius: 4px;
-            text-align: center;
-            font-size: 13px;
-        }
-
-        .hashtag-display {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            min-height: 40px;
-            padding: 10px;
-            background: #363636;
-            border-radius: 6px;
-            border: 1px solid #555;
-        }
-
-        .hashtag-tag {
-            background: #D98A29;
-            color: #1A1A1A;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .hashtag-tag:hover {
-            background: #C17A1F;
-            transform: scale(0.95);
-        }
-
-        .hashtag-tag:hover::after {
-            content: '×';
-            position: absolute;
-            right: -6px;
-            top: -6px;
-            background: #FF4444;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
         /* Right Side - Preview */
         .preview-panel {
             position: sticky;
@@ -594,23 +510,6 @@
             background: #ffebee;
             color: #c62828;
             border: 1px solid #ffcdd2;
-        }
-
-        .post-hashtags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .preview-hashtag {
-            color: #0073b1;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .preview-hashtag:hover {
-            text-decoration: underline;
         }
 
         .post-engagement {
@@ -962,42 +861,6 @@
                 </div>
             </div>
 
-            <!-- Hashtag Manager -->
-            <div class="panel-card">
-                <div class="panel-header">
-                    <div class="panel-title">
-                        <span>#</span>
-                        Hashtag Manager
-                    </div>
-                </div>
-                <div class="panel-content">
-                    <div class="message-container" id="hashtag-message"></div>
-
-                    <div class="ai-section">
-                        <h4 style="margin-bottom: 10px; color: #0F7B0F; font-size: 14px;">AI Hashtag Generator</h4>
-                        <div class="hashtag-controls">
-                            <span style="font-size: 14px;">Generate</span>
-                            <input type="number" class="hashtag-count-input" id="hashtag-count" value="5" min="3" max="15">
-                            <span style="font-size: 14px;">hashtags</span>
-                            <button class="ai-generate-btn" onclick="generateHashtags()" id="generate-hashtags-btn">Generate</button>
-                        </div>
-                    </div>
-
-                    <div class="hashtag-input-section">
-                        <input
-                            type="text"
-                            class="hashtag-input"
-                            id="hashtag-input"
-                            placeholder="Type a hashtag and press Enter (without #)"
-                            onkeypress="handleHashtagInput(event)">
-                    </div>
-
-                    <div class="hashtag-display" id="hashtag-display">
-                        <!-- Hashtags will be populated here -->
-                    </div>
-                </div>
-            </div>
-
             <!-- Export & Publish -->
             <div class="panel-card">
                 <div class="panel-header">
@@ -1041,10 +904,6 @@
                         <div class="image-placeholder" id="image-placeholder">
                             Loading post image...
                         </div>
-                    </div>
-
-                    <div class="post-hashtags" id="preview-hashtags">
-                        <!-- Hashtags will appear here -->
                     </div>
 
                     <div class="post-engagement">
@@ -1264,7 +1123,7 @@
             // Store all form data for AI context
             originalFormData = {};
             for (let [key, value] of urlParams.entries()) {
-                if (key !== 'description' && key !== 'hashtags') {
+                if (key !== 'description') {
                     originalFormData[key] = decodeURIComponent(value);
                 }
             }
@@ -1275,17 +1134,6 @@
             if (urlParams.has('description')) {
                 const description = decodeURIComponent(urlParams.get('description'));
                 document.getElementById('post-description').value = description;
-            }
-
-            // Load hashtags if provided
-            if (urlParams.has('hashtags')) {
-                const hashtags = urlParams.get('hashtags').split(',');
-                hashtags.forEach(hashtag => {
-                    const cleanTag = hashtag.replace('#', '').trim();
-                    if (cleanTag) {
-                        addHashtag(cleanTag);
-                    }
-                });
             }
 
             // Display the image
@@ -1416,61 +1264,9 @@
         // Update LinkedIn preview
         function updatePreview() {
             const description = document.getElementById('post-description').value;
-            const hashtags = Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'));
 
             // Update preview text
             document.getElementById('preview-text').textContent = description || 'Your LinkedIn post description will appear here...';
-
-            // Update preview hashtags
-            const hashtagContainer = document.getElementById('preview-hashtags');
-            hashtagContainer.innerHTML = '';
-
-            hashtags.forEach(tag => {
-                const hashtagLink = document.createElement('span');
-                hashtagLink.className = 'preview-hashtag';
-                hashtagLink.textContent = tag.textContent;
-                hashtagContainer.appendChild(hashtagLink);
-            });
-        }
-
-        // Add hashtag
-        function addHashtag(hashtag) {
-            const container = document.getElementById('hashtag-display');
-
-            // Check if hashtag already exists
-            if (container.querySelector(`[data-tag="${hashtag}"]`)) {
-                return false;
-            }
-
-            const tag = document.createElement('span');
-            tag.className = 'hashtag-tag';
-            tag.textContent = `#${hashtag}`;
-            tag.setAttribute('data-tag', hashtag);
-            tag.onclick = function() { removeHashtag(this); };
-
-            container.appendChild(tag);
-            return true;
-        }
-
-        // Remove hashtag
-        function removeHashtag(element) {
-            element.remove();
-            updatePreview();
-        }
-
-        // Handle hashtag input
-        function handleHashtagInput(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                const input = event.target;
-                const hashtag = input.value.trim().replace('#', '');
-
-                if (hashtag) {
-                    addHashtag(hashtag);
-                    input.value = '';
-                    updatePreview();
-                }
-            }
         }
 
         // Generate content using AI webhook
@@ -1539,73 +1335,6 @@
             }
         }
 
-        // Generate hashtags using AI webhook
-        async function generateHashtags() {
-            // Check trial access first
-            if (!trialManager.checkAccess()) {
-                return;
-            }
-
-            const count = parseInt(document.getElementById('hashtag-count').value) || 5;
-            const postText = document.getElementById('post-description').value;
-
-            if (!currentRecordId) {
-                showMessage('hashtag-message', 'No record ID found. Please go back and generate a new post.', 'error');
-                return;
-            }
-
-            setButtonState('generate-hashtags-btn', 'loading', 'Generating...');
-
-            try {
-                // Prepare data for webhook
-                const requestData = {
-                    airtable_record_id: currentRecordId,
-                    hashtag_count: count,
-                    post_description: postText
-                };
-
-                console.log('Sending hashtag generation request:', requestData);
-
-                const response = await fetch('https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Post-Finalize-Hashtags', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestData)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-
-                if (data.hashtags && Array.isArray(data.hashtags)) {
-                    // Clear existing hashtags
-                    document.getElementById('hashtag-display').innerHTML = '';
-
-                    // Add new hashtags
-                    data.hashtags.forEach(hashtag => {
-                        const cleanTag = hashtag.replace('#', '').trim();
-                        if (cleanTag) {
-                            addHashtag(cleanTag);
-                        }
-                    });
-
-                    updatePreview();
-                    setButtonState('generate-hashtags-btn', 'success', 'Generated!');
-                    showMessage('hashtag-message', `Generated ${data.hashtags.length} hashtags successfully!`, 'success');
-                } else {
-                    throw new Error('No hashtags received from AI');
-                }
-
-            } catch (error) {
-                console.error('Error generating hashtags:', error);
-                setButtonState('generate-hashtags-btn', 'error', 'Failed');
-                showMessage('hashtag-message', `Failed to generate hashtags: ${error.message}`, 'error');
-            }
-        }
-
         // Export and utility functions
         function downloadImage() {
             if (currentImageUrl) {
@@ -1632,14 +1361,10 @@
         }
 
         function copyToClipboard() {
-            // Check trial access first (for new generation actions, not copying existing content)
+            // Copy the post description text
             const description = document.getElementById('post-description').value;
-            const hashtags = Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
-                .map(tag => tag.textContent).join(' ');
 
-            const fullText = `${description}\n\n${hashtags}`;
-
-            navigator.clipboard.writeText(fullText).then(() => {
+            navigator.clipboard.writeText(description).then(() => {
                 const button = event.target;
                 const originalText = button.textContent;
                 button.textContent = 'Copied!';
@@ -1662,8 +1387,6 @@
             
             const postData = {
                 description: document.getElementById('post-description').value,
-                hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
-                    .map(tag => tag.textContent.replace('#', '')),
                 image: currentImageUrl,
                 platform: 'linkedin'
             };
@@ -1680,8 +1403,6 @@
             
             const postData = {
                 description: document.getElementById('post-description').value,
-                hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
-                    .map(tag => tag.textContent.replace('#', '')),
                 image: currentImageUrl,
                 recordId: currentRecordId
             };
@@ -1706,8 +1427,6 @@
         function saveDraft() {
             const draftData = {
                 description: document.getElementById('post-description').value,
-                hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
-                    .map(tag => tag.textContent.replace('#', '')),
                 image: currentImageUrl,
                 recordId: currentRecordId,
                 timestamp: new Date().toISOString()
@@ -1738,8 +1457,6 @@
             if (description.trim()) {
                 const autoSaveData = {
                     description: description,
-                    hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
-                        .map(tag => tag.textContent.replace('#', '')),
                     timestamp: new Date().toISOString(),
                     autoSave: true
                 };
