@@ -1,11 +1,817 @@
-<!DOCTYPE html>
+<div class="author-title">Supporting Wyoming Manufacturing</div>
+                            <div class="post-time">• Now</div>
+                        </div>
+                    </div>
+
+                    <div class="post-text" id="preview-text">
+                        Your LinkedIn post description will appear here...
+                    </div>
+
+                    <div id="post-image-container">
+                        <div class="image-placeholder" id="image-placeholder">
+                            Loading post image...
+                        </div>
+                    </div>
+
+                    <div class="post-hashtags" id="preview-hashtags">
+                        <!-- Hashtags will appear here -->
+                    </div>
+
+                    <div class="post-engagement">
+                        <span>👍 ❤️ 💡 12 reactions</span>
+                        <span>3 comments • 1 repost</span>
+                    </div>
+
+                    <div class="engagement-buttons">
+                        <button class="engagement-btn">👍 Like</button>
+                        <button class="engagement-btn">💬 Comment</button>
+                        <button class="engagement-btn">🔄 Repost</button>
+                        <button class="engagement-btn">📤 Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for storing data
+        let originalFormData = {};
+        let currentImageUrl = '';
+        let currentRecordId = '';
+        let urlParams = {};
+
+        // Trial Management System (shared with other pages)
+        class TrialManager {
+            constructor() {
+                this.TRIAL_DURATION = 14; // days
+                this.STORAGE_KEY = 'mw_trial_data';
+            }
+
+            getTrialData() {
+                const stored = localStorage.getItem(this.STORAGE_KEY);
+                return stored ? JSON.parse(stored) : null;
+            }
+
+            getTrialStatus() {
+                const trialData = this.getTrialData();
+                
+                if (!trialData || !trialData.hasStarted) {
+                    return { status: 'not_started', daysLeft: this.TRIAL_DURATION };
+                }
+
+                const startDate = new Date(trialData.startDate);
+                const now = new Date();
+                const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+                const daysLeft = Math.max(0, this.TRIAL_DURATION - daysPassed);
+
+                if (daysLeft > 0) {
+                    return { status: 'active', daysLeft, daysPassed };
+                } else {
+                    return { status: 'expired', daysLeft: 0, daysPassed };
+                }
+            }
+
+            checkAccess() {
+                const status = this.getTrialStatus();
+                
+                if (status.status === 'expired') {
+                    this.showAccessDenied();
+                    return false;
+                } else if (status.status === 'not_started') {
+                    // Redirect to homepage to start trial
+                    window.location.href = 'index.html';
+                    return false;
+                }
+                return true;
+            }
+
+            showAccessDenied() {
+                document.getElementById('access-denied-overlay').classList.add('show');
+            }
+
+            updateTrialStatusIndicator() {
+                const status = this.getTrialStatus();
+                const indicator = document.getElementById('trial-status-indicator');
+                
+                if (status.status === 'active') {
+                    indicator.textContent = `Trial: ${status.daysLeft} days left`;
+                    indicator.className = 'trial-status-indicator';
+                    indicator.style.display = 'block';
+                } else if (status.status === 'expired') {
+                    indicator.textContent = 'Trial Expired';
+                    indicator.className = 'trial-status-indicator expired';
+                    indicator.style.display = 'block';
+                } else {
+                    indicator.style.display = 'none';
+                }
+            }
+        }
+
+        // Initialize trial manager
+        let trialManager;
+
+        // Initialize the finalizer
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Manufacturing Works Post Finalizer loaded');
+            
+            // Initialize trial manager and check access
+            trialManager = new TrialManager();
+            
+            // Check if user has access before loading anything else
+            if (!trialManager.checkAccess()) {
+                return; // Stop execution if no access
+            }
+
+            // Update trial status display
+            trialManager.updateTrialStatusIndicator();
+
+            // Load data and initialize
+            loadFromURLParameters();
+            updateStats();
+            updatePreview();
+        });
+
+        // Global functions for access denied overlay
+        function startSubscription() {
+            // TODO: Implement Stripe checkout
+            console.log('Starting Stripe subscription process...');
+            alert('Stripe integration coming soon!\n\nThis will redirect to secure Stripe checkout for $300/month subscription.');
+        }
+
+        function goToHomepage() {
+            window.location.href = 'index.html';
+        }
+
+        // Quick prompt presets
+        const quickPrompts = {
+            professional: "Write a professional LinkedIn post that highlights manufacturing excellence and innovation. Use a confident, authoritative tone suitable for industry leaders.",
+            engaging: "Create an engaging LinkedIn post that tells a compelling story about manufacturing growth. Make it relatable and inspiring for small business owners.",
+            educational: "Write an educational LinkedIn post that teaches something valuable about manufacturing processes or industry trends. Make it informative yet accessible.",
+            story: "Tell a story in this LinkedIn post about overcoming manufacturing challenges or achieving success. Make it personal and inspiring.",
+            cta: "Write a LinkedIn post with a strong call-to-action that encourages readers to engage with Manufacturing Works. Be direct and compelling."
+        };
+
+        // Load data from URL parameters
+        function loadFromURLParameters() {
+            urlParams = new URLSearchParams(window.location.search);
+            
+            console.log('URL Parameters:', urlParams.toString());
+
+            // Check if we have essential data
+            const recordId = urlParams.get('airtable_record_id');
+            const imageUrl = urlParams.get('image_url');
+            
+            if (!recordId || !imageUrl) {
+                console.warn('Missing essential data in URL parameters');
+                showNoDataWarning();
+                return;
+            }
+
+            // Store essential data
+            currentRecordId = recordId;
+            currentImageUrl = imageUrl;
+            
+            console.log('Loaded essential data:', {
+                recordId: currentRecordId,
+                imageUrl: currentImageUrl
+            });
+
+            // Store all form data for AI context
+            originalFormData = {};
+            for (let [key, value] of urlParams.entries()) {
+                if (key !== 'description' && key !== 'hashtags') {
+                    originalFormData[key] = decodeURIComponent(value);
+                }
+            }
+
+            console.log('Original form data loaded:', originalFormData);
+
+            // Load existing content if provided
+            if (urlParams.has('description')) {
+                const description = decodeURIComponent(urlParams.get('description'));
+                document.getElementById('post-description').value = description;
+            }
+
+            // Load hashtags if provided
+            if (urlParams.has('hashtags')) {
+                const hashtags = urlParams.get('hashtags').split(',');
+                hashtags.forEach(hashtag => {
+                    const cleanTag = hashtag.replace('#', '').trim();
+                    if (cleanTag) {
+                        addHashtag(cleanTag);
+                    }
+                });
+            }
+
+            // Display the image
+            displayPostImage(currentImageUrl);
+
+            // Hide no-data warning and show main content
+            document.getElementById('no-data-warning').style.display = 'none';
+            document.getElementById('main-layout').style.display = 'grid';
+        }
+
+        function showNoDataWarning() {
+            document.getElementById('no-data-warning').style.display = 'block';
+            document.getElementById('main-layout').style.display = 'none';
+        }
+
+        function displayPostImage(imageUrl) {
+            const imageContainer = document.getElementById('post-image-container');
+            
+            if (!imageUrl) {
+                imageContainer.innerHTML = '<div class="image-error">No image URL provided</div>';
+                return;
+            }
+
+            // Create image element
+            const img = document.createElement('img');
+            img.className = 'post-image';
+            img.alt = 'Manufacturing Works Post Image';
+            img.style.display = 'none'; // Hide initially
+            
+            img.onload = function() {
+                // Remove placeholder and show image
+                imageContainer.innerHTML = '';
+                imageContainer.appendChild(img);
+                img.style.display = 'block';
+                console.log('Post image loaded successfully');
+            };
+            
+            img.onerror = function() {
+                imageContainer.innerHTML = '<div class="image-error">Failed to load image</div>';
+                console.error('Failed to load post image:', imageUrl);
+            };
+            
+            img.src = imageUrl;
+        }
+
+        // Set quick prompt
+        function setQuickPrompt(type) {
+            const promptArea = document.getElementById('content-prompt');
+            promptArea.value = quickPrompts[type] || '';
+        }
+
+        // Show message utility function
+        function showMessage(containerId, message, type = 'success') {
+            const container = document.getElementById(containerId);
+            container.className = `message-container message-${type}`;
+            container.textContent = message;
+            container.style.display = 'block';
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 5000);
+        }
+
+        // Button state management
+        function setButtonState(buttonId, state, text) {
+            const button = document.getElementById(buttonId);
+            const originalText = button.getAttribute('data-original-text') || button.textContent;
+
+            if (!button.getAttribute('data-original-text')) {
+                button.setAttribute('data-original-text', originalText);
+            }
+
+            button.classList.remove('btn-loading', 'btn-success', 'btn-error');
+            button.disabled = false;
+
+            switch(state) {
+                case 'loading':
+                    button.classList.add('btn-loading');
+                    button.disabled = true;
+                    button.textContent = text || 'Loading...';
+                    break;
+                case 'success':
+                    button.classList.add('btn-success');
+                    button.textContent = text || '✓ Success';
+                    setTimeout(() => {
+                        button.classList.remove('btn-success');
+                        button.textContent = originalText;
+                    }, 2000);
+                    break;
+                case 'error':
+                    button.classList.add('btn-error');
+                    button.textContent = text || '✗ Error';
+                    setTimeout(() => {
+                        button.classList.remove('btn-error');
+                        button.textContent = originalText;
+                    }, 3000);
+                    break;
+                default:
+                    button.textContent = originalText;
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const text = document.getElementById('post-description').value;
+            const charCount = text.length;
+            const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const readingTime = Math.max(1, Math.ceil(wordCount / 200 * 60)); // 200 WPM in seconds
+
+            document.getElementById('desc-char-count').textContent = charCount;
+            document.getElementById('desc-word-count').textContent = wordCount;
+            document.getElementById('reading-time').textContent = readingTime;
+
+            // Color coding for character limit
+            const charElement = document.getElementById('desc-char-count');
+            if (charCount > 2700) {
+                charElement.style.color = '#FF6B6B';
+            } else if (charCount > 2400) {
+                charElement.style.color = '#FFD93D';
+            } else {
+                charElement.style.color = '#AAAAAA';
+            }
+        }
+
+        // Update LinkedIn preview
+        function updatePreview() {
+            const description = document.getElementById('post-description').value;
+            const hashtags = Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'));
+
+            // Update preview text
+            document.getElementById('preview-text').textContent = description || 'Your LinkedIn post description will appear here...';
+
+            // Update preview hashtags
+            const hashtagContainer = document.getElementById('preview-hashtags');
+            hashtagContainer.innerHTML = '';
+
+            hashtags.forEach(tag => {
+                const hashtagLink = document.createElement('span');
+                hashtagLink.className = 'preview-hashtag';
+                hashtagLink.textContent = tag.textContent;
+                hashtagContainer.appendChild(hashtagLink);
+            });
+        }
+
+        // Add hashtag
+        function addHashtag(hashtag) {
+            const container = document.getElementById('hashtag-display');
+
+            // Check if hashtag already exists
+            if (container.querySelector(`[data-tag="${hashtag}"]`)) {
+                return false;
+            }
+
+            const tag = document.createElement('span');
+            tag.className = 'hashtag-tag';
+            tag.textContent = `#${hashtag}`;
+            tag.setAttribute('data-tag', hashtag);
+            tag.onclick = function() { removeHashtag(this); };
+
+            container.appendChild(tag);
+            return true;
+        }
+
+        // Remove hashtag
+        function removeHashtag(element) {
+            element.remove();
+            updatePreview();
+        }
+
+        // Handle hashtag input
+        function handleHashtagInput(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const input = event.target;
+                const hashtag = input.value.trim().replace('#', '');
+
+                if (hashtag) {
+                    addHashtag(hashtag);
+                    input.value = '';
+                    updatePreview();
+                }
+            }
+        }
+
+        // Generate content using AI webhook
+        async function generateContent() {
+            // Check trial access first
+            if (!trialManager.checkAccess()) {
+                return;
+            }
+
+            const prompt = document.getElementById('content-prompt').value.trim();
+            if (!prompt) {
+                showMessage('content-message', 'Please enter a prompt for content generation.', 'error');
+                return;
+            }
+
+            if (!currentRecordId) {
+                showMessage('content-message', 'No record ID found. Please go back and generate a new post.', 'error');
+                return;
+            }
+
+            setButtonState('generate-content-btn', 'loading', 'Generating Content...');
+
+            try {
+                // Prepare data for webhook
+                const requestData = {
+                    airtable_record_id: currentRecordId,
+                    prompt: prompt,
+                    current_post_text: document.getElementById('post-description').value
+                };
+
+                console.log('Sending content generation request:', requestData);
+
+                const response = await fetch('https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Post-Finalize-AI-Post-Text', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.generated_content) {
+                    document.getElementById('post-description').value = data.generated_content;
+                    document.getElementById('post-description').classList.add('content-updated');
+                    setTimeout(() => {
+                        document.getElementById('post-description').classList.remove('content-updated');
+                    }, 500);
+
+                    updatePreview();
+                    updateStats();
+                    setButtonState('generate-content-btn', 'success', '✓ Generated!');
+                    showMessage('content-message', 'Content generated successfully!', 'success');
+                } else {
+                    throw new Error('No content received from AI');
+                }
+
+            } catch (error) {
+                console.error('Error generating content:', error);
+                setButtonState('generate-content-btn', 'error', '✗ Failed');
+                showMessage('content-message', `Failed to generate content: ${error.message}`, 'error');
+            }
+        }
+
+        // Generate hashtags using AI webhook
+        async function generateHashtags() {
+            // Check trial access first
+            if (!trialManager.checkAccess()) {
+                return;
+            }
+
+            const count = parseInt(document.getElementById('hashtag-count').value) || 5;
+            const postText = document.getElementById('post-description').value;
+
+            if (!currentRecordId) {
+                showMessage('hashtag-message', 'No record ID found. Please go back and generate a new post.', 'error');
+                return;
+            }
+
+            setButtonState('generate-hashtags-btn', 'loading', 'Generating...');
+
+            try {
+                // Prepare data for webhook
+                const requestData = {
+                    airtable_record_id: currentRecordId,
+                    hashtag_count: count,
+                    post_description: postText
+                };
+
+                console.log('Sending hashtag generation request:', requestData);
+
+                const response = await fetch('https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Post-Finalize-Hashtags', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.hashtags && Array.isArray(data.hashtags)) {
+                    // Clear existing hashtags
+                    document.getElementById('hashtag-display').innerHTML = '';
+
+                    // Add new hashtags
+                    data.hashtags.forEach(hashtag => {
+                        const cleanTag = hashtag.replace('#', '').trim();
+                        if (cleanTag) {
+                            addHashtag(cleanTag);
+                        }
+                    });
+
+                    updatePreview();
+                    setButtonState('generate-hashtags-btn', 'success', '✓ Generated!');
+                    showMessage('hashtag-message', `Generated ${data.hashtags.length} hashtags successfully!`, 'success');
+                } else {
+                    throw new Error('No hashtags received from AI');
+                }
+
+            } catch (error) {
+                console.error('Error generating hashtags:', error);
+                setButtonState('generate-hashtags-btn', 'error', '✗ Failed');
+                showMessage('hashtag-message', `Failed to generate hashtags: ${error.message}`, 'error');
+            }
+        }
+
+        // Export and utility functions
+        function downloadImage() {
+            // Check trial access first
+            if (!trialManager.checkAccess()) {
+                return;
+            }
+
+            if (currentImageUrl) {
+                const link = document.createElement('a');
+                link.href = currentImageUrl;
+                link.download = 'manufacturing-works-post.jpg';
+                link.click();
+            } else {
+                alert('No image available to download');
+            }
+        }
+
+        function copyToClipboard() {
+            // Check trial access first
+            if (!trialManager.checkAccess()) {
+                return;
+            }
+
+            const description = document.getElementById('post-description').value;
+            const hashtags = Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
+                .map(tag => tag.textContent).join(' ');
+
+            const fullText = `${description}\n\n${hashtags}`;
+
+            navigator.clipboard.writeText(fullText).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.classList.add('btn-success');
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('btn-success');
+                }, 2000);
+            }).catch(() => {
+                alert('Failed to copy to clipboard. Please try again.');
+            });
+        }
+
+        function exportToScheduler() {
+            // Check trial access first
+            if (!trialManager.checkAccess()) {
+                return;
+            }
+
+            const postData = {
+                description: document.getElementById('post-description').value,
+                hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
+                    .map(tag => tag.textContent.replace('#', '')),
+                image: currentImageUrl,
+                platform: 'linkedin'
+            };
+
+            console.log('Exporting to scheduler:', postData);
+            alert('Scheduler export functionality would be implemented here');
+        }
+
+        function publishPost() {
+            // Check trial access first
+            if (!trialManager.checkAccess()) {
+                return;
+            }
+
+            const postData = {
+                description: document.getElementById('post-description').value,
+                hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
+                    .map(tag => tag.textContent.replace('#', '')),
+                image: currentImageUrl,
+                recordId: currentRecordId
+            };
+
+            if (!postData.description.trim()) {
+                alert('Please add a post description before publishing.');
+                return;
+            }
+
+            if (confirm('Ready to publish this post to LinkedIn?')) {
+                const button = event.target;
+                setButtonState('publish-btn', 'loading', '🚀 Publishing...');
+
+                setTimeout(() => {
+                    console.log('Publishing post:', postData);
+                    alert('Post published successfully!');
+                    setButtonState('publish-btn', 'success', '✓ Published!');
+                }, 3000);
+            }
+        }
+
+        function saveDraft() {
+            // Check trial access first
+            if (!trialManager.checkAccess()) {
+                return;
+            }
+
+            const draftData = {
+                description: document.getElementById('post-description').value,
+                hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
+                    .map(tag => tag.textContent.replace('#', '')),
+                image: currentImageUrl,
+                recordId: currentRecordId,
+                timestamp: new Date().toISOString()
+            };
+
+            localStorage.setItem('postDraft', JSON.stringify(draftData));
+
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '✓ Saved';
+            button.classList.add('btn-success');
+
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('btn-success');
+            }, 2000);
+        }
+
+        function goBack() {
+            if (confirm('Go back to content generator? Make sure to save your draft first.')) {
+                window.location.href = 'content-generator.html';
+            }
+        }
+
+        // Auto-save functionality
+        setInterval(() => {
+            const description = document.getElementById('post-description').value;
+            if (description.trim()) {
+                const autoSaveData = {
+                    description: description,
+                    hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
+                        .map(tag => tag.textContent.replace('#', '')),
+                    timestamp: new Date().toISOString(),
+                    autoSave: true
+                };
+                localStorage.setItem('postAutoSave', JSON.stringify(autoSaveData));
+            }
+        }, 30000); // Auto-save every 30 seconds
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveDraft();
+            }
+
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && e.target.id === 'post-description') {
+                e.preventDefault();
+                publishPost();
+            }
+        });
+
+        // Character counter animation
+        function animateCharCounter() {
+            const charElement = document.getElementById('desc-char-count');
+            charElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                charElement.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        // Enhanced update stats with animation
+        const originalUpdateStats = updateStats;
+        updateStats = function() {
+            originalUpdateStats();
+            animateCharCounter();
+        };
+    </script>
+</body>
+</html>
+        <!-- Left Side - Content Creation -->
+        <div class="content-panel">
+            <!-- LinkedIn Post Description -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span>📝</span>
+                        LinkedIn Post Description
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="message-container" id="content-message"></div>
+
+                    <div class="ai-section">
+                        <h4 style="margin-bottom: 10px; color: #0F7B0F; font-size: 14px;">✨ AI Content Generator</h4>
+                        <textarea
+                            class="ai-prompt-area"
+                            id="content-prompt"
+                            placeholder="Describe how you want the LinkedIn post to sound... (e.g., 'Write a professional post about manufacturing innovation with a call to action')"></textarea>
+
+                        <div class="ai-quick-prompts">
+                            <button class="quick-prompt-btn" onclick="setQuickPrompt('professional')">Professional</button>
+                            <button class="quick-prompt-btn" onclick="setQuickPrompt('engaging')">Engaging</button>
+                            <button class="quick-prompt-btn" onclick="setQuickPrompt('educational')">Educational</button>
+                            <button class="quick-prompt-btn" onclick="setQuickPrompt('story')">Tell a Story</button>
+                            <button class="quick-prompt-btn" onclick="setQuickPrompt('cta')">Call to Action</button>
+                        </div>
+
+                        <button class="ai-generate-btn" onclick="generateContent()" id="generate-content-btn">
+                            Generate Content
+                        </button>
+                    </div>
+
+                    <textarea
+                        class="post-description"
+                        id="post-description"
+                        placeholder="Write your LinkedIn post description here... This is the text that appears in the LinkedIn feed, separate from the text on your image."
+                        oninput="updatePreview(); updateStats();"></textarea>
+
+                    <div class="description-stats">
+                        <span>Characters: <span id="desc-char-count">0</span> / 3000</span>
+                        <span>Words: <span id="desc-word-count">0</span></span>
+                        <span>Estimated reading time: <span id="reading-time">0</span>s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hashtag Manager -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span>🏷️</span>
+                        Hashtag Manager
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="message-container" id="hashtag-message"></div>
+
+                    <div class="ai-section">
+                        <h4 style="margin-bottom: 10px; color: #0F7B0F; font-size: 14px;">✨ AI Hashtag Generator</h4>
+                        <div class="hashtag-controls">
+                            <span style="font-size: 14px;">Generate</span>
+                            <input type="number" class="hashtag-count-input" id="hashtag-count" value="5" min="3" max="15">
+                            <span style="font-size: 14px;">hashtags</span>
+                            <button class="ai-generate-btn" onclick="generateHashtags()" id="generate-hashtags-btn">Generate</button>
+                        </div>
+                    </div>
+
+                    <div class="hashtag-input-section">
+                        <input
+                            type="text"
+                            class="hashtag-input"
+                            id="hashtag-input"
+                            placeholder="Type a hashtag and press Enter (without #)"
+                            onkeypress="handleHashtagInput(event)">
+                    </div>
+
+                    <div class="hashtag-display" id="hashtag-display">
+                        <!-- Hashtags will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export & Publish -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span>🚀</span>
+                        Export & Publish Options
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="export-options">
+                        <button class="export-btn" onclick="downloadImage()">📥 Download Image</button>
+                        <button class="export-btn" onclick="copyToClipboard()">📋 Copy Text</button>
+                        <button class="export-btn" onclick="exportToScheduler()">📅 Schedule Post</button>
+                        <button class="export-btn primary" onclick="publishPost()">🔗 Publish to LinkedIn</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - LinkedIn Preview -->
+        <div class="preview-panel">
+            <div class="linkedin-preview">
+                <div class="preview-header">
+                    📱 LinkedIn Preview
+                </div>
+                <div class="linkedin-post-preview">
+                    <div class="post-header">
+                        <div class="profile-pic">MW</div>
+                        <div class="post-author">
+                            <div class="author-name">Manufacturing Works</div>
+                            <div class="author-title">Supporting<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalize Post - Manufacturing Works</title>
     <style>
-        /* ===== BATCH 1: HTML STRUCTURE AND CSS STYLES ===== */
         * {
             margin: 0;
             padding: 0;
@@ -17,6 +823,79 @@
             background: #2B2B2B;
             color: #FFFFFF;
             min-height: 100vh;
+        }
+
+        /* Access Denied Overlay */
+        .access-denied {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 58, 107, 0.95);
+            color: #ffffff;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .access-denied.show {
+            display: flex;
+        }
+
+        .access-denied-content {
+            background: #ffffff;
+            color: #2c3a6b;
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .access-denied-content h2 {
+            font-size: 2.5em;
+            color: #F5B800;
+            margin-bottom: 20px;
+        }
+
+        .subscription-btn {
+            background: #F5B800;
+            color: #2c3a6b;
+            border: none;
+            padding: 20px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 6px 20px rgba(245, 184, 0, 0.3);
+        }
+
+        .subscription-btn:hover {
+            background: #e6a600;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(245, 184, 0, 0.4);
+        }
+
+        .back-btn {
+            background: transparent;
+            color: #2c3a6b;
+            border: 2px solid #2c3a6b;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .back-btn:hover {
+            background: #2c3a6b;
+            color: #ffffff;
         }
 
         /* Header Bar */
@@ -110,6 +989,46 @@
 
         .header-btn.secondary:hover {
             background: #C17A1F;
+        }
+
+        /* Trial Status Indicator */
+        .trial-status-indicator {
+            background: #F5B800;
+            color: #2c3a6b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        .trial-status-indicator.expired {
+            background: #ff6b6b;
+            color: #ffffff;
+        }
+
+        /* No Data Warning */
+        .no-data-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #FFC107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        .no-data-warning h3 {
+            margin-bottom: 10px;
+        }
+
+        .no-data-warning p {
+            margin-bottom: 15px;
+        }
+
+        .no-data-warning .header-btn {
+            background: #FFC107;
+            color: #000;
         }
 
         /* Main Layout */
@@ -360,8 +1279,6 @@
             font-size: 12px;
             font-weight: bold;
         }
-        /* ===== END OF BATCH 1 ===== */
-        /* ===== BATCH 2: PREVIEW PANEL CSS AND RESPONSIVE DESIGN ===== */
 
         /* Right Side - Preview */
         .preview-panel {
@@ -450,15 +1367,23 @@
             display: block;
         }
 
-        .post-image.loading {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
+        .image-placeholder {
+            width: 100%;
+            height: 300px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
         }
 
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        .image-error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
         }
 
         .post-hashtags {
@@ -598,48 +1523,14 @@
             border-color: #FF4444 !important;
         }
 
-        /* Image Loading Placeholder */
-        .image-placeholder {
-            width: 100%;
-            height: 300px;
-            background: #f0f0f0;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 15px;
+        /* Enhanced Animation for Content Updates */
+        .content-updated {
+            animation: contentFlash 0.5s ease-out;
         }
 
-        .image-error {
-            background: #ffebee;
-            color: #c62828;
-            border: 1px solid #ffcdd2;
-        }
-
-        /* No Data Warning */
-        .no-data-warning {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid rgba(255, 193, 7, 0.3);
-            color: #FFC107;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px;
-            text-align: center;
-        }
-
-        .no-data-warning h3 {
-            margin-bottom: 10px;
-        }
-
-        .no-data-warning p {
-            margin-bottom: 15px;
-        }
-
-        .no-data-warning .header-btn {
-            background: #FFC107;
-            color: #000;
+        @keyframes contentFlash {
+            0% { background-color: rgba(217, 138, 41, 0.2); }
+            100% { background-color: transparent; }
         }
 
         /* Responsive */
@@ -698,6 +1589,15 @@
             .export-btn {
                 min-width: auto;
             }
+
+            .access-denied-content {
+                padding: 30px;
+                margin: 20px;
+            }
+
+            .access-denied-content h2 {
+                font-size: 2em;
+            }
         }
 
         /* Scrollbar Styling */
@@ -717,51 +1617,24 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #666666;
         }
-
-        /* Enhanced Animation for Content Updates */
-        .content-updated {
-            animation: contentFlash 0.5s ease-out;
-        }
-
-        @keyframes contentFlash {
-            0% { background-color: rgba(217, 138, 41, 0.2); }
-            100% { background-color: transparent; }
-        }
-
-        /* Tooltip Enhancements */
-        .tooltip {
-            position: relative;
-            cursor: help;
-        }
-
-        .tooltip::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1A1A1A;
-            color: #FFFFFF;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .tooltip:hover::after {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* ===== END OF BATCH 2 ===== */
-        </style>
+    </style>
 </head>
 <body>
-<!-- ===== BATCH 3: HTML STRUCTURE AND INITIAL JAVASCRIPT ===== -->
+    <!-- Access Denied Overlay -->
+    <div class="access-denied" id="access-denied-overlay">
+        <div class="access-denied-content">
+            <h2>🔒 Trial Expired</h2>
+            <p>Your 14-day free trial has ended. Subscribe now to continue editing and finalizing your posts.</p>
+            
+            <div style="margin: 30px 0;">
+                <div style="font-size: 2.5em; color: #F5B800; font-weight: bold; margin-bottom: 10px;">$300<span style="font-size: 0.4em;">/month</span></div>
+                <p style="font-size: 1.1em; opacity: 0.8;">Complete AI automation solution</p>
+            </div>
+
+            <button class="subscription-btn" onclick="startSubscription()">Subscribe Now</button>
+            <button class="back-btn" onclick="goToHomepage()">Back to Homepage</button>
+        </div>
+    </div>
 
     <!-- Header Bar -->
     <div class="header-bar">
@@ -771,6 +1644,9 @@
             <div class="step-indicator">
                 <div class="step completed">1. Generate Ideas</div>
                 <div class="step current">2. Finalize Content</div>
+            </div>
+            <div class="trial-status-indicator" id="trial-status-indicator">
+                <!-- Populated by JavaScript -->
             </div>
         </div>
         <div class="header-actions">
@@ -787,685 +1663,3 @@
         <p>Please go back to the content generator to create a post before finalizing it.</p>
         <button class="header-btn" onclick="window.location.href='content-generator.html'">← Go to Content Generator</button>
     </div>
-
-    <!-- Main Layout -->
-    <div class="finalizer-layout" id="main-layout">
-        <!-- Left Side - Content Creation -->
-        <div class="content-panel">
-            <!-- LinkedIn Post Description -->
-            <div class="panel-card">
-                <div class="panel-header">
-                    <div class="panel-title">
-                        <span>📝</span>
-                        LinkedIn Post Description
-                    </div>
-                </div>
-                <div class="panel-content">
-                    <div class="message-container" id="content-message"></div>
-
-                    <div class="ai-section">
-                        <h4 style="margin-bottom: 10px; color: #0F7B0F; font-size: 14px;">✨ AI Content Generator</h4>
-                        <textarea
-                            class="ai-prompt-area"
-                            id="content-prompt"
-                            placeholder="Describe how you want the LinkedIn post to sound... (e.g., 'Write a professional post about manufacturing innovation with a call to action')"></textarea>
-
-                        <div class="ai-quick-prompts">
-                            <button class="quick-prompt-btn" onclick="setQuickPrompt('professional')">Professional</button>
-                            <button class="quick-prompt-btn" onclick="setQuickPrompt('engaging')">Engaging</button>
-                            <button class="quick-prompt-btn" onclick="setQuickPrompt('educational')">Educational</button>
-                            <button class="quick-prompt-btn" onclick="setQuickPrompt('story')">Tell a Story</button>
-                            <button class="quick-prompt-btn" onclick="setQuickPrompt('cta')">Call to Action</button>
-                        </div>
-
-                        <button class="ai-generate-btn" onclick="generateContent()" id="generate-content-btn">
-                            Generate Content
-                        </button>
-                    </div>
-
-                    <textarea
-                        class="post-description"
-                        id="post-description"
-                        placeholder="Write your LinkedIn post description here... This is the text that appears in the LinkedIn feed, separate from the text on your image."
-                        oninput="updatePreview(); updateStats();"></textarea>
-
-                    <div class="description-stats">
-                        <span>Characters: <span id="desc-char-count">0</span> / 3000</span>
-                        <span>Words: <span id="desc-word-count">0</span></span>
-                        <span>Estimated reading time: <span id="reading-time">0</span>s</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hashtag Manager -->
-            <div class="panel-card">
-                <div class="panel-header">
-                    <div class="panel-title">
-                        <span>🏷️</span>
-                        Hashtag Manager
-                    </div>
-                </div>
-                <div class="panel-content">
-                    <div class="message-container" id="hashtag-message"></div>
-
-                    <div class="ai-section">
-                        <h4 style="margin-bottom: 10px; color: #0F7B0F; font-size: 14px;">✨ AI Hashtag Generator</h4>
-                        <div class="hashtag-controls">
-                            <span style="font-size: 14px;">Generate</span>
-                            <input type="number" class="hashtag-count-input" id="hashtag-count" value="5" min="3" max="15">
-                            <span style="font-size: 14px;">hashtags</span>
-                            <button class="ai-generate-btn" onclick="generateHashtags()" id="generate-hashtags-btn">Generate</button>
-                        </div>
-                    </div>
-
-                    <div class="hashtag-input-section">
-                        <input
-                            type="text"
-                            class="hashtag-input"
-                            id="hashtag-input"
-                            placeholder="Type a hashtag and press Enter (without #)"
-                            onkeypress="handleHashtagInput(event)">
-                    </div>
-
-                    <div class="hashtag-display" id="hashtag-display">
-                        <!-- Hashtags will be populated here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Export & Publish -->
-            <div class="panel-card">
-                <div class="panel-header">
-                    <div class="panel-title">
-                        <span>🚀</span>
-                        Export & Publish Options
-                    </div>
-                </div>
-                <div class="panel-content">
-                    <div class="export-options">
-                        <button class="export-btn" onclick="downloadImage()">📥 Download Image</button>
-                        <button class="export-btn" onclick="copyToClipboard()">📋 Copy Text</button>
-                        <button class="export-btn" onclick="exportToScheduler()">📅 Schedule Post</button>
-                        <button class="export-btn primary" onclick="publishPost()">🔗 Publish to LinkedIn</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Side - LinkedIn Preview -->
-        <div class="preview-panel">
-            <div class="linkedin-preview">
-                <div class="preview-header">
-                    📱 LinkedIn Preview
-                </div>
-                <div class="linkedin-post-preview">
-                    <div class="post-header">
-                        <div class="profile-pic">MW</div>
-                        <div class="post-author">
-                            <div class="author-name">Manufacturing Works</div>
-                            <div class="author-title">Supporting Wyoming Manufacturing</div>
-                            <div class="post-time">• Now</div>
-                        </div>
-                    </div>
-
-                    <div class="post-text" id="preview-text">
-                        Your LinkedIn post description will appear here...
-                    </div>
-
-                    <div id="post-image-container">
-                        <div class="image-placeholder" id="image-placeholder">
-                            Loading post image...
-                        </div>
-                    </div>
-
-                    <div class="post-hashtags" id="preview-hashtags">
-                        <!-- Hashtags will appear here -->
-                    </div>
-
-                    <div class="post-engagement">
-                        <span>👍 ❤️ 💡 12 reactions</span>
-                        <span>3 comments • 1 repost</span>
-                    </div>
-
-                    <div class="engagement-buttons">
-                        <button class="engagement-btn">👍 Like</button>
-                        <button class="engagement-btn">💬 Comment</button>
-                        <button class="engagement-btn">🔄 Repost</button>
-                        <button class="engagement-btn">📤 Send</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Global variables for storing data
-        let originalFormData = {};
-        let currentImageUrl = '';
-        let currentRecordId = '';
-        let urlParams = {};
-
-        // Initialize the finalizer
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Manufacturing Works Post Finalizer loaded');
-            loadFromURLParameters();
-            updateStats();
-            updatePreview();
-        });
-
-        // Quick prompt presets
-        const quickPrompts = {
-            professional: "Write a professional LinkedIn post that highlights manufacturing excellence and innovation. Use a confident, authoritative tone suitable for industry leaders.",
-            engaging: "Create an engaging LinkedIn post that tells a compelling story about manufacturing growth. Make it relatable and inspiring for small business owners.",
-            educational: "Write an educational LinkedIn post that teaches something valuable about manufacturing processes or industry trends. Make it informative yet accessible.",
-            story: "Tell a story in this LinkedIn post about overcoming manufacturing challenges or achieving success. Make it personal and inspiring.",
-            cta: "Write a LinkedIn post with a strong call-to-action that encourages readers to engage with Manufacturing Works. Be direct and compelling."
-        };
-
-        // UPDATED: Load data from URL parameters instead of N8N template injection
-        function loadFromURLParameters() {
-            urlParams = new URLSearchParams(window.location.search);
-            
-            console.log('URL Parameters:', urlParams.toString());
-
-            // Check if we have essential data
-            const recordId = urlParams.get('airtable_record_id');
-            const imageUrl = urlParams.get('image_url');
-            
-            if (!recordId || !imageUrl) {
-                console.warn('Missing essential data in URL parameters');
-                showNoDataWarning();
-                return;
-            }
-
-            // Store essential data
-            currentRecordId = recordId;
-            currentImageUrl = imageUrl;
-            
-            console.log('Loaded essential data:', {
-                recordId: currentRecordId,
-                imageUrl: currentImageUrl
-            });
-
-            // Store all form data for AI context
-            originalFormData = {};
-            for (let [key, value] of urlParams.entries()) {
-                if (key !== 'description' && key !== 'hashtags') {
-                    originalFormData[key] = decodeURIComponent(value);
-                }
-            }
-
-            console.log('Original form data loaded:', originalFormData);
-
-            // Load existing content if provided
-            if (urlParams.has('description')) {
-                const description = decodeURIComponent(urlParams.get('description'));
-                document.getElementById('post-description').value = description;
-            }
-
-            // Load hashtags if provided
-            if (urlParams.has('hashtags')) {
-                const hashtags = urlParams.get('hashtags').split(',');
-                hashtags.forEach(hashtag => {
-                    const cleanTag = hashtag.replace('#', '').trim();
-                    if (cleanTag) {
-                        addHashtag(cleanTag);
-                    }
-                });
-            }
-
-            // Display the image
-            displayPostImage(currentImageUrl);
-
-            // Hide no-data warning and show main content
-            document.getElementById('no-data-warning').style.display = 'none';
-            document.getElementById('main-layout').style.display = 'grid';
-        }
-
-        function showNoDataWarning() {
-            document.getElementById('no-data-warning').style.display = 'block';
-            document.getElementById('main-layout').style.display = 'none';
-        }
-
-        function displayPostImage(imageUrl) {
-            const imageContainer = document.getElementById('post-image-container');
-            
-            if (!imageUrl) {
-                imageContainer.innerHTML = '<div class="image-error">No image URL provided</div>';
-                return;
-            }
-
-            // Create image element
-            const img = document.createElement('img');
-            img.className = 'post-image';
-            img.alt = 'Manufacturing Works Post Image';
-            img.style.display = 'none'; // Hide initially
-            
-            img.onload = function() {
-                // Remove placeholder and show image
-                imageContainer.innerHTML = '';
-                imageContainer.appendChild(img);
-                img.style.display = 'block';
-                console.log('Post image loaded successfully');
-            };
-            
-            img.onerror = function() {
-                imageContainer.innerHTML = '<div class="image-error">Failed to load image</div>';
-                console.error('Failed to load post image:', imageUrl);
-            };
-            
-            img.src = imageUrl;
-        }
-
-        // Set quick prompt
-        function setQuickPrompt(type) {
-            const promptArea = document.getElementById('content-prompt');
-            promptArea.value = quickPrompts[type] || '';
-        }
-
-        // Show message utility function
-        function showMessage(containerId, message, type = 'success') {
-            const container = document.getElementById(containerId);
-            container.className = `message-container message-${type}`;
-            container.textContent = message;
-            container.style.display = 'block';
-
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                container.style.display = 'none';
-            }, 5000);
-        }
-
-        // Button state management
-        function setButtonState(buttonId, state, text) {
-            const button = document.getElementById(buttonId);
-            const originalText = button.getAttribute('data-original-text') || button.textContent;
-
-            if (!button.getAttribute('data-original-text')) {
-                button.setAttribute('data-original-text', originalText);
-            }
-
-            button.classList.remove('btn-loading', 'btn-success', 'btn-error');
-            button.disabled = false;
-
-            switch(state) {
-                case 'loading':
-                    button.classList.add('btn-loading');
-                    button.disabled = true;
-                    button.textContent = text || 'Loading...';
-                    break;
-                case 'success':
-                    button.classList.add('btn-success');
-                    button.textContent = text || '✓ Success';
-                    setTimeout(() => {
-                        button.classList.remove('btn-success');
-                        button.textContent = originalText;
-                    }, 2000);
-                    break;
-                case 'error':
-                    button.classList.add('btn-error');
-                    button.textContent = text || '✗ Error';
-                    setTimeout(() => {
-                        button.classList.remove('btn-error');
-                        button.textContent = originalText;
-                    }, 3000);
-                    break;
-                default:
-                    button.textContent = originalText;
-            }
-        }
-
-        // Update statistics
-        function updateStats() {
-            const text = document.getElementById('post-description').value;
-            const charCount = text.length;
-            const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
-            const readingTime = Math.max(1, Math.ceil(wordCount / 200 * 60)); // 200 WPM in seconds
-
-            document.getElementById('desc-char-count').textContent = charCount;
-            document.getElementById('desc-word-count').textContent = wordCount;
-            document.getElementById('reading-time').textContent = readingTime;
-
-            // Color coding for character limit
-            const charElement = document.getElementById('desc-char-count');
-            if (charCount > 2700) {
-                charElement.style.color = '#FF6B6B';
-            } else if (charCount > 2400) {
-                charElement.style.color = '#FFD93D';
-            } else {
-                charElement.style.color = '#AAAAAA';
-            }
-        }
-
-        // Update LinkedIn preview
-        function updatePreview() {
-            const description = document.getElementById('post-description').value;
-            const hashtags = Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'));
-
-            // Update preview text
-            document.getElementById('preview-text').textContent = description || 'Your LinkedIn post description will appear here...';
-
-            // Update preview hashtags
-            const hashtagContainer = document.getElementById('preview-hashtags');
-            hashtagContainer.innerHTML = '';
-
-            hashtags.forEach(tag => {
-                const hashtagLink = document.createElement('span');
-                hashtagLink.className = 'preview-hashtag';
-                hashtagLink.textContent = tag.textContent;
-                hashtagContainer.appendChild(hashtagLink);
-            });
-        }
-
-        // Add hashtag
-        function addHashtag(hashtag) {
-            const container = document.getElementById('hashtag-display');
-
-            // Check if hashtag already exists
-            if (container.querySelector(`[data-tag="${hashtag}"]`)) {
-                return false;
-            }
-
-            const tag = document.createElement('span');
-            tag.className = 'hashtag-tag';
-            tag.textContent = `#${hashtag}`;
-            tag.setAttribute('data-tag', hashtag);
-            tag.onclick = function() { removeHashtag(this); };
-
-            container.appendChild(tag);
-            return true;
-        }
-
-        // Remove hashtag
-        function removeHashtag(element) {
-            element.remove();
-            updatePreview();
-        }
-
-        // Handle hashtag input
-        function handleHashtagInput(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                const input = event.target;
-                const hashtag = input.value.trim().replace('#', '');
-
-                if (hashtag) {
-                    addHashtag(hashtag);
-                    input.value = '';
-                    updatePreview();
-                }
-            }
-        }
-
-        // UPDATED: Generate content using new AI webhook
-        async function generateContent() {
-            const prompt = document.getElementById('content-prompt').value.trim();
-            if (!prompt) {
-                showMessage('content-message', 'Please enter a prompt for content generation.', 'error');
-                return;
-            }
-
-            if (!currentRecordId) {
-                showMessage('content-message', 'No record ID found. Please go back and generate a new post.', 'error');
-                return;
-            }
-
-            setButtonState('generate-content-btn', 'loading', 'Generating Content...');
-
-            try {
-                // Prepare data for webhook - only send record ID as requested
-                const requestData = {
-                    airtable_record_id: currentRecordId,
-                    prompt: prompt,
-                    current_post_text: document.getElementById('post-description').value
-                };
-
-                console.log('Sending content generation request:', requestData);
-
-                const response = await fetch('https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Post-Finalize-AI-Post-Text', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestData)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-
-                if (data.generated_content) {
-                    document.getElementById('post-description').value = data.generated_content;
-                    document.getElementById('post-description').classList.add('content-updated');
-                    setTimeout(() => {
-                        document.getElementById('post-description').classList.remove('content-updated');
-                    }, 500);
-
-                    updatePreview();
-                    updateStats();
-                    setButtonState('generate-content-btn', 'success', '✓ Generated!');
-                    showMessage('content-message', 'Content generated successfully!', 'success');
-                } else {
-                    throw new Error('No content received from AI');
-                }
-
-            } catch (error) {
-                console.error('Error generating content:', error);
-                setButtonState('generate-content-btn', 'error', '✗ Failed');
-                showMessage('content-message', `Failed to generate content: ${error.message}`, 'error');
-            }
-        }
-
-        // UPDATED: Generate hashtags using new AI webhook
-        async function generateHashtags() {
-            const count = parseInt(document.getElementById('hashtag-count').value) || 5;
-            const postText = document.getElementById('post-description').value;
-
-            if (!currentRecordId) {
-                showMessage('hashtag-message', 'No record ID found. Please go back and generate a new post.', 'error');
-                return;
-            }
-
-            setButtonState('generate-hashtags-btn', 'loading', 'Generating...');
-
-            try {
-                // Prepare data for webhook - only send record ID as requested
-                const requestData = {
-                    airtable_record_id: currentRecordId,
-                    hashtag_count: count,
-                    post_description: postText
-                };
-
-                console.log('Sending hashtag generation request:', requestData);
-
-                const response = await fetch('https://thayneautomations.app.n8n.cloud/webhook/Manufacturing-Works-Content-Generator-Post-Finalize-Hashtags', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestData)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-
-                if (data.hashtags && Array.isArray(data.hashtags)) {
-                    // Clear existing hashtags
-                    document.getElementById('hashtag-display').innerHTML = '';
-
-                    // Add new hashtags
-                    data.hashtags.forEach(hashtag => {
-                        const cleanTag = hashtag.replace('#', '').trim();
-                        if (cleanTag) {
-                            addHashtag(cleanTag);
-                        }
-                    });
-
-                    updatePreview();
-                    setButtonState('generate-hashtags-btn', 'success', '✓ Generated!');
-                    showMessage('hashtag-message', `Generated ${data.hashtags.length} hashtags successfully!`, 'success');
-                } else {
-                    throw new Error('No hashtags received from AI');
-                }
-
-            } catch (error) {
-                console.error('Error generating hashtags:', error);
-                setButtonState('generate-hashtags-btn', 'error', '✗ Failed');
-                showMessage('hashtag-message', `Failed to generate hashtags: ${error.message}`, 'error');
-            }
-        }
-
-        // Export and utility functions
-        function downloadImage() {
-            if (currentImageUrl) {
-                const link = document.createElement('a');
-                link.href = currentImageUrl;
-                link.download = 'manufacturing-works-post.jpg';
-                link.click();
-            } else {
-                alert('No image available to download');
-            }
-        }
-
-        function copyToClipboard() {
-            const description = document.getElementById('post-description').value;
-            const hashtags = Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
-                .map(tag => tag.textContent).join(' ');
-
-            const fullText = `${description}\n\n${hashtags}`;
-
-            navigator.clipboard.writeText(fullText).then(() => {
-                const button = event.target;
-                const originalText = button.textContent;
-                button.textContent = '✓ Copied!';
-                button.classList.add('btn-success');
-
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.classList.remove('btn-success');
-                }, 2000);
-            }).catch(() => {
-                alert('Failed to copy to clipboard. Please try again.');
-            });
-        }
-
-        function exportToScheduler() {
-            const postData = {
-                description: document.getElementById('post-description').value,
-                hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
-                    .map(tag => tag.textContent.replace('#', '')),
-                image: currentImageUrl,
-                platform: 'linkedin'
-            };
-
-            console.log('Exporting to scheduler:', postData);
-            alert('Scheduler export functionality would be implemented here');
-        }
-
-        function publishPost() {
-            const postData = {
-                description: document.getElementById('post-description').value,
-                hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
-                    .map(tag => tag.textContent.replace('#', '')),
-                image: currentImageUrl,
-                recordId: currentRecordId
-            };
-
-            if (!postData.description.trim()) {
-                alert('Please add a post description before publishing.');
-                return;
-            }
-
-            if (confirm('Ready to publish this post to LinkedIn?')) {
-                const button = event.target;
-                setButtonState('publish-btn', 'loading', '🚀 Publishing...');
-
-                setTimeout(() => {
-                    console.log('Publishing post:', postData);
-                    alert('Post published successfully!');
-                    setButtonState('publish-btn', 'success', '✓ Published!');
-                }, 3000);
-            }
-        }
-
-        function saveDraft() {
-            const draftData = {
-                description: document.getElementById('post-description').value,
-                hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
-                    .map(tag => tag.textContent.replace('#', '')),
-                image: currentImageUrl,
-                recordId: currentRecordId,
-                timestamp: new Date().toISOString()
-            };
-
-            localStorage.setItem('postDraft', JSON.stringify(draftData));
-
-            const button = event.target;
-            const originalText = button.textContent;
-            button.textContent = '✓ Saved';
-            button.classList.add('btn-success');
-
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.classList.remove('btn-success');
-            }, 2000);
-        }
-
-        function goBack() {
-            if (confirm('Go back to content generator? Make sure to save your draft first.')) {
-                window.location.href = 'content-generator.html';
-            }
-        }
-
-        // Auto-save functionality
-        setInterval(() => {
-            const description = document.getElementById('post-description').value;
-            if (description.trim()) {
-                const autoSaveData = {
-                    description: description,
-                    hashtags: Array.from(document.querySelectorAll('#hashtag-display .hashtag-tag'))
-                        .map(tag => tag.textContent.replace('#', '')),
-                    timestamp: new Date().toISOString(),
-                    autoSave: true
-                };
-                localStorage.setItem('postAutoSave', JSON.stringify(autoSaveData));
-            }
-        }, 30000); // Auto-save every 30 seconds
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                e.preventDefault();
-                saveDraft();
-            }
-
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && e.target.id === 'post-description') {
-                e.preventDefault();
-                publishPost();
-            }
-        });
-
-        // Character counter animation
-        function animateCharCounter() {
-            const charElement = document.getElementById('desc-char-count');
-            charElement.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                charElement.style.transform = 'scale(1)';
-            }, 150);
-        }
-
-        // Enhanced update stats with animation
-        const originalUpdateStats = updateStats;
-        updateStats = function() {
-            originalUpdateStats();
-            animateCharCounter();
-        };
-
-    </script>
-</body>
-</html>
