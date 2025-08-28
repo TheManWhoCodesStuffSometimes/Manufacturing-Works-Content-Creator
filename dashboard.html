@@ -462,14 +462,157 @@
             grid-column: span 2;
         }
 
+        /* Training Tools Styles */
+        .training-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+        }
+
+        .training-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .training-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #2c3a6b;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .training-section-icon {
+            width: 25px;
+            height: 25px;
+            background: #F5B800;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #2c3a6b;
+        }
+
+        /* Stats Sections Styles */
+        .stats-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9ff;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+        }
+
+        .stats-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .stats-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #2c3a6b;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .stats-section-icon {
+            width: 22px;
+            height: 22px;
+            background: #F5B800;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #2c3a6b;
+        }
+
+        /* Quote Manager Styles */
+        .quote-manager-card {
+            grid-column: span 2;
+            min-height: 400px;
+        }
+
+        .quote-input-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9ff;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+        }
+
+        .quote-inputs-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .quote-author-input {
+            margin-bottom: 0;
+        }
+
+        .quote-add-btn {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .quotes-display-area {
+            background: #f8f9ff;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 20px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .quotes-list {
+            margin-bottom: 20px;
+        }
+
+        .quote-item {
+            border-bottom: 1px solid #e8e8e8;
+            padding: 12px 0;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .quote-item:last-child {
+            border-bottom: none;
+        }
+
+        .quote-database-stats {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
         /* Responsive Design */
         @media (max-width: 1200px) {
-            .large-card {
+            .large-card, .quote-manager-card {
                 grid-column: span 1;
             }
 
             .stats-grid {
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+
+            .quote-inputs-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .quote-add-btn {
+                width: 100%;
             }
         }
 
@@ -562,7 +705,7 @@
                     </div>
 
                     <!-- MIRA Recap -->
-                    <div class="dashboard-card">
+                    <div class="dashboard-card large-card">
                         <div class="card-header">
                             <div class="card-icon">📊</div>
                             <h3 class="card-title">MIRA Conversation Recap</h3>
@@ -577,7 +720,7 @@
                     </div>
 
                     <!-- Document Upload for Training -->
-                    <div class="dashboard-card">
+                    <div class="dashboard-card large-card">
                         <div class="card-header">
                             <div class="card-icon">📁</div>
                             <h3 class="card-title">Upload Training Documents</h3>
@@ -601,7 +744,7 @@
                     </div>
 
                     <!-- Manual Training Data Entry -->
-                    <div class="dashboard-card">
+                    <div class="dashboard-card large-card">
                         <div class="card-header">
                             <div class="card-icon">✍️</div>
                             <h3 class="card-title">Manual Training Data Entry</h3>
@@ -630,84 +773,105 @@ For example:
                 </div>
 
                 <div class="stats-grid">
-                    <!-- Monthly Post Generation Progress -->
+                    <!-- Combined Monthly Stats -->
                     <div class="dashboard-card">
                         <div class="card-header">
-                            <div class="card-icon">📈</div>
-                            <h3 class="card-title">Monthly Usage</h3>
+                            <div class="card-icon">📊</div>
+                            <h3 class="card-title">Monthly Statistics</h3>
                         </div>
-                        <div class="progress-container">
-                            <div class="progress-info">
-                                <span class="progress-current">342 posts generated</span>
-                                <span class="progress-limit">750 limit</span>
+                        
+                        <!-- Monthly Usage Section -->
+                        <div class="stats-section">
+                            <h4 class="stats-section-title">
+                                <div class="stats-section-icon">📈</div>
+                                Usage Progress
+                            </h4>
+                            <div class="progress-container">
+                                <div class="progress-info">
+                                    <span class="progress-current">342 posts generated</span>
+                                    <span class="progress-limit">750 limit</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 45.6%;"></div>
+                                </div>
                             </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 45.6%;"></div>
+                            <div class="metric-change positive" style="text-align: center; margin-top: 10px;">
+                                ↗ 54% usage rate
                             </div>
                         </div>
-                        <div class="metric-change positive" style="text-align: center; margin-top: 15px;">
-                            ↗ 54% usage rate
+
+                        <!-- User Feedback Section -->
+                        <div class="stats-section">
+                            <h4 class="stats-section-title">
+                                <div class="stats-section-icon">👍</div>
+                                User Feedback
+                            </h4>
+                            <div class="ratio-container">
+                                <div class="ratio-bar">
+                                    <div class="ratio-likes" style="width: 73%;"></div>
+                                    <div class="ratio-dislikes" style="width: 27%;"></div>
+                                </div>
+                                <div class="ratio-labels">
+                                    <span class="ratio-like-label">👍 73% Likes (184)</span>
+                                    <span class="ratio-dislike-label">👎 27% Dislikes (68)</span>
+                                </div>
+                            </div>
+                            <div style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666;">
+                                252 total votes this month
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Like/Dislike Ratio -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <div class="card-icon">👍</div>
-                            <h3 class="card-title">User Feedback</h3>
-                        </div>
-                        <div class="ratio-container">
-                            <div class="ratio-bar">
-                                <div class="ratio-likes" style="width: 73%;"></div>
-                                <div class="ratio-dislikes" style="width: 27%;"></div>
-                            </div>
-                            <div class="ratio-labels">
-                                <span class="ratio-like-label">👍 73% Likes (184)</span>
-                                <span class="ratio-dislike-label">👎 27% Dislikes (68)</span>
-                            </div>
-                        </div>
-                        <div style="text-align: center; margin-top: 15px; font-size: 0.9em; color: #666;">
-                            252 total votes this month
-                        </div>
-                    </div>
-
-                    <!-- Quote Database Manager -->
-                    <div class="dashboard-card">
+                    <!-- Quote Database Manager - Full Width -->
+                    <div class="dashboard-card quote-manager-card">
                         <div class="card-header">
                             <div class="card-icon">💭</div>
                             <h3 class="card-title">Quote Database Manager</h3>
                         </div>
-                        <div style="margin-bottom: 20px;">
-                            <input 
-                                type="text" 
-                                class="quote-input" 
-                                placeholder="Enter quote text..."
-                                id="quote-text"
-                            >
-                            <input 
-                                type="text" 
-                                class="quote-input" 
-                                placeholder="Quote author (optional)..."
-                                id="quote-author"
-                            >
-                            <button class="action-btn primary" onclick="addQuote()">Add Quote</button>
+                        
+                        <div class="quote-input-section">
+                            <div class="quote-inputs-row">
+                                <input 
+                                    type="text" 
+                                    class="quote-input" 
+                                    placeholder="Enter quote text..."
+                                    id="quote-text"
+                                >
+                                <input 
+                                    type="text" 
+                                    class="quote-input quote-author-input" 
+                                    placeholder="Quote author (optional)..."
+                                    id="quote-author"
+                                >
+                                <button class="action-btn primary quote-add-btn" onclick="addQuote()">Add Quote</button>
+                            </div>
                         </div>
 
-                        <div style="background: #f8f9ff; border: 2px solid #e8e8e8; border-radius: 12px; padding: 20px;">
+                        <div class="quotes-display-area">
                             <h4 style="margin-bottom: 15px; color: #2c3a6b;">Recent Quotes Added:</h4>
-                            <div id="quotes-list">
-                                <div style="border-bottom: 1px solid #e8e8e8; padding: 10px 0;">
+                            <div id="quotes-list" class="quotes-list">
+                                <div class="quote-item">
                                     "Innovation distinguishes between a leader and a follower." - <em>Steve Jobs</em>
                                 </div>
-                                <div style="border-bottom: 1px solid #e8e8e8; padding: 10px 0;">
+                                <div class="quote-item">
                                     "Quality is not an act, it is a habit." - <em>Aristotle</em>
                                 </div>
-                                <div style="padding: 10px 0;">
+                                <div class="quote-item">
                                     "Manufacturing is more than just putting parts together. It's coming up with ideas, testing principles and perfecting the engineering." - <em>James Dyson</em>
                                 </div>
+                                <div class="quote-item">
+                                    "The way to get started is to quit talking and begin doing." - <em>Walt Disney</em>
+                                </div>
+                                <div class="quote-item">
+                                    "Continuous improvement is better than delayed perfection." - <em>Mark Twain</em>
+                                </div>
                             </div>
-                            <div style="text-align: center; margin-top: 15px; font-size: 0.9em; color: #666;">
-                                Total quotes in database: 47
+                            <div class="quote-database-stats">
+                                <span>Total quotes in database: 47</span>
+                                <span>•</span>
+                                <span>Most used category: Motivation (23)</span>
+                                <span>•</span>
+                                <span>Added this month: 12</span>
                             </div>
                         </div>
                     </div>
