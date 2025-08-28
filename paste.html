@@ -18,91 +18,6 @@
             min-height: 100vh;
         }
 
-        /* Access Denied Overlay */
-        .access-denied {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(44, 58, 107, 0.95);
-            color: #ffffff;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-
-        .access-denied.show {
-            display: flex;
-        }
-
-        .access-denied-content {
-            background: #ffffff;
-            color: #2c3a6b;
-            padding: 50px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 600px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        .access-denied-content h2 {
-            font-size: 2.5em;
-            color: #F5B800;
-            margin-bottom: 20px;
-        }
-
-        .access-denied-content p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .subscription-btn {
-            background: #F5B800;
-            color: #2c3a6b;
-            border: none;
-            padding: 20px 40px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 10px;
-            box-shadow: 0 6px 20px rgba(245, 184, 0, 0.3);
-        }
-
-        .subscription-btn:hover {
-            background: #e6a600;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(245, 184, 0, 0.4);
-        }
-
-        .subscription-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .back-btn {
-            background: transparent;
-            color: #2c3a6b;
-            border: 2px solid #2c3a6b;
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 10px;
-        }
-
-        .back-btn:hover {
-            background: #2c3a6b;
-            color: #ffffff;
-        }
-
         /* Header Bar */
         .header-bar {
             background: #1A1A1A;
@@ -194,27 +109,6 @@
 
         .header-btn.secondary:hover {
             background: #C17A1F;
-        }
-
-        /* Trial Status Indicator */
-        .trial-status-indicator {
-            background: #F5B800;
-            color: #2c3a6b;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 15px;
-            display: none;
-        }
-
-        .trial-status-indicator.active {
-            display: block;
-        }
-
-        .trial-status-indicator.expired {
-            background: #ff6b6b;
-            color: #ffffff;
         }
 
         /* No Data Warning */
@@ -642,32 +536,6 @@
             100% { background-color: transparent; }
         }
 
-        /* Stripe Payment Processing */
-        .payment-processing {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #ffffff;
-            color: #2c3a6b;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            z-index: 11000;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            display: none;
-        }
-
-        .payment-processing.show {
-            display: block;
-        }
-
-        .payment-processing .spinner {
-            font-size: 24px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
-        }
-
         /* Responsive */
         @media (max-width: 1200px) {
             .finalizer-layout {
@@ -724,21 +592,6 @@
             .export-btn {
                 min-width: auto;
             }
-
-            .access-denied-content {
-                padding: 30px;
-                margin: 20px;
-            }
-
-            .access-denied-content h2 {
-                font-size: 2em;
-            }
-
-            .trial-status-indicator {
-                position: static;
-                margin: 10px auto;
-                width: fit-content;
-            }
         }
 
         /* Scrollbar Styling */
@@ -761,29 +614,6 @@
     </style>
 </head>
 <body>
-    <!-- Access Denied Overlay -->
-    <div class="access-denied" id="access-denied-overlay">
-        <div class="access-denied-content">
-            <h2>Trial Expired</h2>
-            <p>Your 14-day free trial has ended. Subscribe now to continue editing and finalizing your posts.</p>
-            
-            <div style="margin: 30px 0;">
-                <div style="font-size: 2.5em; color: #F5B800; font-weight: bold; margin-bottom: 10px;">$300<span style="font-size: 0.4em;">/month</span></div>
-                <p style="font-size: 1.1em; opacity: 0.8;">Complete AI automation solution</p>
-            </div>
-
-            <button class="subscription-btn" onclick="startSubscription()" id="subscribe-btn">Subscribe Now</button>
-            <button class="back-btn" onclick="goToHomepage()">Back to Homepage</button>
-        </div>
-    </div>
-
-    <!-- Payment Processing Overlay -->
-    <div class="payment-processing" id="payment-processing">
-        <div class="spinner">⚙️</div>
-        <h3>Processing Payment...</h3>
-        <p>Please wait while we set up your subscription.</p>
-    </div>
-
     <!-- Header Bar -->
     <div class="header-bar">
         <div class="header-left">
@@ -793,12 +623,9 @@
                 <div class="step completed">1. Generate Ideas</div>
                 <div class="step current">2. Finalize Content</div>
             </div>
-            <div class="trial-status-indicator" id="trial-status-indicator">
-                <!-- Populated by JavaScript -->
-            </div>
         </div>
         <div class="header-actions">
-            <button class="header-btn" onclick="goBack()">← Back to Editor</button>
+            <button class="header-btn" onclick="goBack()">← Back to Generator</button>
             <button class="header-btn secondary" onclick="saveDraft()">Save Draft</button>
             <button class="header-btn primary" onclick="publishPost()">Publish Post</button>
         </div>
@@ -922,9 +749,6 @@
         </div>
     </div>
 
-    <!-- Stripe Payment Script -->
-    <script src="https://js.stripe.com/v3/"></script>
-
     <script>
         // Global variables for storing data
         let originalFormData = {};
@@ -932,159 +756,15 @@
         let currentRecordId = '';
         let urlParams = {};
 
-        // Stripe Integration
-        const stripe = Stripe('pk_test_51S0TloQWAo9xVnnyfxkAgQHWNdZH8y16l889OBwcHt2aMLl41x8Y1qPI9tXrxUFGbUQJOAqyR0WqeXCVa7gsNdVr00OsaHc0Qe');
-
-        // Trial Management System (shared with other pages)
-        class TrialManager {
-            constructor() {
-                this.TRIAL_DURATION = 14; // days
-                this.STORAGE_KEY = 'mw_trial_data';
-                this.init();
-            }
-
-            init() {
-                this.updateTrialStatus();
-            }
-
-            getTrialData() {
-                const stored = localStorage.getItem(this.STORAGE_KEY);
-                return stored ? JSON.parse(stored) : null;
-            }
-
-            getTrialStatus() {
-                const trialData = this.getTrialData();
-                
-                if (!trialData || !trialData.hasStarted) {
-                    return { status: 'not_started', daysLeft: this.TRIAL_DURATION };
-                }
-
-                const startDate = new Date(trialData.startDate);
-                const now = new Date();
-                const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-                const daysLeft = Math.max(0, this.TRIAL_DURATION - daysPassed);
-
-                if (daysLeft > 0) {
-                    return { status: 'active', daysLeft, daysPassed };
-                } else {
-                    return { status: 'expired', daysLeft: 0, daysPassed };
-                }
-            }
-
-            checkAccess() {
-                const status = this.getTrialStatus();
-                
-                if (status.status === 'expired') {
-                    this.showAccessDenied();
-                    return false;
-                } else if (status.status === 'not_started') {
-                    // Redirect to homepage to start trial
-                    window.location.href = 'index.html';
-                    return false;
-                }
-                return true;
-            }
-
-            showAccessDenied() {
-                document.getElementById('access-denied-overlay').classList.add('show');
-            }
-
-            updateTrialStatus() {
-                const status = this.getTrialStatus();
-                const indicator = document.getElementById('trial-status-indicator');
-                
-                if (status.status === 'active') {
-                    indicator.textContent = `Trial: ${status.daysLeft} days left`;
-                    indicator.className = 'trial-status-indicator active';
-                } else if (status.status === 'expired') {
-                    indicator.textContent = 'Trial Expired';
-                    indicator.className = 'trial-status-indicator active expired';
-                } else {
-                    indicator.className = 'trial-status-indicator';
-                }
-            }
-        }
-
-        // Initialize trial manager
-        let trialManager;
-
         // Initialize the finalizer
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Manufacturing Works Post Finalizer loaded');
             
-            // Initialize trial manager and check access
-            trialManager = new TrialManager();
-            
-            // Check if user has access before loading anything else
-            if (!trialManager.checkAccess()) {
-                return; // Stop execution if no access
-            }
-
-            // Update trial status display
-            trialManager.updateTrialStatus();
-
             // Load data and initialize
             loadFromURLParameters();
             updateStats();
             updatePreview();
         });
-
-        // Global functions for access denied overlay
-        async function startSubscription() {
-            const subscribeBtn = document.getElementById('subscribe-btn');
-            const originalText = subscribeBtn.textContent;
-            
-            try {
-                subscribeBtn.disabled = true;
-                subscribeBtn.textContent = 'Creating Checkout...';
-                
-                console.log('Starting Stripe subscription process...');
-                
-                // Show payment processing overlay
-                document.getElementById('payment-processing').classList.add('show');
-                
-                // Create Stripe Checkout Session
-                const response = await fetch('https://thayneautomations.app.n8n.cloud/webhook/stripe-payment-webhook', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        priceId: 'price_1S0U33QWAo9xVnnykJ9Og8jS', // Monthly $300 price ID
-                        successUrl: window.location.origin + '/content-generator.html?payment=success',
-                        cancelUrl: window.location.origin + '/content-generator.html?payment=cancelled'
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const { sessionId } = await response.json();
-                
-                // Redirect to Stripe Checkout
-                const { error } = await stripe.redirectToCheckout({
-                    sessionId: sessionId
-                });
-
-                if (error) {
-                    throw error;
-                }
-
-            } catch (error) {
-                console.error('Error starting subscription:', error);
-                document.getElementById('payment-processing').classList.remove('show');
-                
-                subscribeBtn.disabled = false;
-                subscribeBtn.textContent = originalText;
-                
-                alert('Failed to start subscription process. Please try again or contact support.');
-            }
-        }
-
-        function goToHomepage() {
-            window.location.href = 'index.html';
-        }
 
         // Quick prompt presets
         const quickPrompts = {
@@ -1271,11 +951,6 @@
 
         // Generate content using AI webhook
         async function generateContent() {
-            // Check trial access first
-            if (!trialManager.checkAccess()) {
-                return;
-            }
-
             const prompt = document.getElementById('content-prompt').value.trim();
             if (!prompt) {
                 showMessage('content-message', 'Please enter a prompt for content generation.', 'error');
@@ -1380,11 +1055,6 @@
         }
 
         function exportToScheduler() {
-            // Check trial access first
-            if (!trialManager.checkAccess()) {
-                return;
-            }
-            
             const postData = {
                 description: document.getElementById('post-description').value,
                 image: currentImageUrl,
@@ -1396,11 +1066,6 @@
         }
 
         function publishPost() {
-            // Check trial access first
-            if (!trialManager.checkAccess()) {
-                return;
-            }
-            
             const postData = {
                 description: document.getElementById('post-description').value,
                 image: currentImageUrl,
