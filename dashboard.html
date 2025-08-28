@@ -1,1121 +1,670 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Manufacturing Works</title>
-    <meta name="description" content="Analytics and management dashboard for Manufacturing Works AI tools and chatbot statistics.">
-    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background: #ffffff;
-            min-height: 100vh;
-            color: #2c3a6b;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .logo {
-            width: 150px;
-            height: auto;
-            margin: 0 auto 25px;
-            display: block;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-        }
-
-        .header h1 {
-            font-size: 2.8em;
-            margin-bottom: 15px;
-            font-weight: 300;
-            color: #F5B800;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.8;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.5;
-            color: #2c3a6b;
-        }
-
-        .navigation {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .nav-menu {
-            background: #ffffff;
-            border: 2px solid #e8e8e8;
-            border-radius: 30px;
-            padding: 10px 20px;
-            box-shadow: 0 8px 25px rgba(44, 58, 107, 0.1);
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav-link {
-            color: #2c3a6b;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-
-        .nav-link:hover {
-            background: #F5B800;
-            color: #2c3a6b;
-        }
-
-        .nav-link.active {
-            background: #2c3a6b;
-            color: #ffffff;
-        }
-
-        /* Dashboard Layout */
-        .dashboard-sections {
-            display: flex;
-            flex-direction: column;
-            gap: 50px;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #F5B800;
-        }
-
-        .section-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #F5B800 0%, #e6a600 100%);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: #2c3a6b;
-            box-shadow: 0 4px 15px rgba(245, 184, 0, 0.2);
-        }
-
-        .section-title {
-            font-size: 2.2em;
-            color: #2c3a6b;
-            font-weight: 600;
-        }
-
-        /* Card Grid Layouts */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-        }
-
-        .dashboard-card {
-            background: #ffffff;
-            border: 2px solid #e8e8e8;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 30px rgba(44, 58, 107, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .dashboard-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, #F5B800 0%, #e6a600 100%);
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(44, 58, 107, 0.15);
-            border-color: #F5B800;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e8e8e8;
-        }
-
-        .card-icon {
-            width: 35px;
-            height: 35px;
-            background: #F5B800;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #2c3a6b;
-        }
-
-        .card-title {
-            font-size: 1.3em;
-            color: #2c3a6b;
-            font-weight: 600;
-        }
-
-        /* Metric Display Styles */
-        .metric-value {
-            font-size: 3em;
-            font-weight: bold;
-            color: #F5B800;
-            text-align: center;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(245, 184, 0, 0.2);
-        }
-
-        .metric-label {
-            font-size: 1.1em;
-            color: #2c3a6b;
-            text-align: center;
-            opacity: 0.8;
-            margin-bottom: 15px;
-        }
-
-        .metric-change {
-            text-align: center;
-            font-size: 0.9em;
-            padding: 5px 12px;
-            border-radius: 15px;
-            display: inline-block;
-        }
-
-        .metric-change.positive {
-            background: rgba(76, 175, 80, 0.1);
-            color: #4CAF50;
-        }
-
-        .metric-change.negative {
-            background: rgba(244, 67, 54, 0.1);
-            color: #f44336;
-        }
-
-        /* Progress Bar Styles */
-        .progress-container {
-            margin: 20px 0;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.95em;
-        }
-
-        .progress-current {
-            font-weight: 600;
-            color: #2c3a6b;
-        }
-
-        .progress-limit {
-            color: #666;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 12px;
-            background: #e8e8e8;
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #F5B800 0%, #e6a600 100%);
-            border-radius: 25px;
-            transition: width 0.8s ease;
-            box-shadow: 0 2px 8px rgba(245, 184, 0, 0.3);
-        }
-
-        /* Text Area and Input Styles */
-        .recap-area {
-            background: #f8f9ff;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
-            padding: 20px;
-            min-height: 120px;
-            font-size: 0.95em;
-            line-height: 1.6;
-            color: #2c3a6b;
-            margin-top: 15px;
-        }
-
-        .training-textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 15px;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
-            font-size: 14px;
-            resize: vertical;
-            background: #ffffff;
-            color: #2c3a6b;
-            font-family: inherit;
-            box-shadow: 0 2px 8px rgba(44, 58, 107, 0.05);
-        }
-
-        .training-textarea:focus {
-            border-color: #F5B800;
-            outline: none;
-            box-shadow: 0 4px 15px rgba(245, 184, 0, 0.15);
-        }
-
-        .quote-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
-            font-size: 14px;
-            margin-bottom: 15px;
-            background: #ffffff;
-            color: #2c3a6b;
-            box-shadow: 0 2px 8px rgba(44, 58, 107, 0.05);
-        }
-
-        .quote-input:focus {
-            border-color: #F5B800;
-            outline: none;
-            box-shadow: 0 4px 15px rgba(245, 184, 0, 0.15);
-        }
-
-        /* File Upload Styles */
-        .file-upload-area {
-            border: 2px dashed #e8e8e8;
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: #ffffff;
-            margin-top: 15px;
-        }
-
-        .file-upload-area:hover {
-            border-color: #F5B800;
-            background: rgba(245, 184, 0, 0.05);
-        }
-
-        .file-upload-area.dragover {
-            border-color: #F5B800;
-            background: rgba(245, 184, 0, 0.1);
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 2.5em;
-            color: #F5B800;
-            margin-bottom: 10px;
-        }
-
-        .upload-text {
-            font-size: 1.1em;
-            color: #2c3a6b;
-            margin-bottom: 5px;
-        }
-
-        .upload-hint {
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .uploaded-files {
-            margin-top: 15px;
-        }
-
-        .uploaded-file {
-            background: rgba(245, 184, 0, 0.1);
-            border: 1px solid rgba(245, 184, 0, 0.3);
-            border-radius: 8px;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #2c3a6b;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Button Styles */
-        .action-btn {
-            background: #2c3a6b;
-            color: #ffffff;
-            border: 2px solid #2c3a6b;
-            padding: 12px 25px;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(44, 58, 107, 0.2);
-        }
-
-        .action-btn:hover {
-            background: #ffffff;
-            color: #2c3a6b;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(44, 58, 107, 0.3);
-        }
-
-        .action-btn.primary {
-            background: #F5B800;
-            border-color: #F5B800;
-            color: #2c3a6b;
-            box-shadow: 0 4px 15px rgba(245, 184, 0, 0.2);
-        }
-
-        .action-btn.primary:hover {
-            background: #e6a600;
-            border-color: #e6a600;
-            color: #ffffff;
-            box-shadow: 0 6px 20px rgba(245, 184, 0, 0.3);
-        }
-
-        /* Like/Dislike Ratio Styles */
-        .ratio-container {
-            margin: 20px 0;
-        }
-
-        .ratio-bar {
-            height: 25px;
-            background: #e8e8e8;
-            border-radius: 25px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .ratio-likes {
-            height: 100%;
-            background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
-            float: left;
-            transition: width 0.8s ease;
-            border-radius: 25px 0 0 25px;
-        }
-
-        .ratio-dislikes {
-            height: 100%;
-            background: linear-gradient(90deg, #f44336 0%, #d32f2f 100%);
-            float: right;
-            transition: width 0.8s ease;
-            border-radius: 0 25px 25px 0;
-        }
-
-        .ratio-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-
-        .ratio-like-label {
-            color: #4CAF50;
-            font-weight: 600;
-        }
-
-        .ratio-dislike-label {
-            color: #f44336;
-            font-weight: 600;
-        }
-
-        /* Large Card Styles */
-        .large-card {
-            grid-column: span 2;
-        }
-
-        /* Full Width Container Styles */
-        .full-width-container {
-            background: #ffffff;
-            border: 2px solid #e8e8e8;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 30px rgba(44, 58, 107, 0.1);
-            margin: 30px 0;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .full-width-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, #F5B800 0%, #e6a600 100%);
-        }
-
-        .container-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #e8e8e8;
-        }
-
-        .container-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #F5B800 0%, #e6a600 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #2c3a6b;
-            box-shadow: 0 4px 15px rgba(245, 184, 0, 0.2);
-        }
-
-        .container-title {
-            font-size: 1.6em;
-            color: #2c3a6b;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .training-tools-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-
-        .training-tool-section {
-            background: #f8f9ff;
-            border: 2px solid #e8e8e8;
-            border-radius: 15px;
-            padding: 25px;
-            transition: all 0.3s ease;
-        }
-
-        .training-tool-section:hover {
-            border-color: #F5B800;
-            box-shadow: 0 8px 25px rgba(245, 184, 0, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .tool-section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e8e8e8;
-        }
-
-        .tool-section-icon {
-            width: 30px;
-            height: 30px;
-            background: #F5B800;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: #2c3a6b;
-        }
-
-        .tool-section-title {
-            font-size: 1.2em;
-            color: #2c3a6b;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        /* Training Tools Styles */
-        .training-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8f9ff;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
-        }
-
-        .training-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .training-section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            color: #2c3a6b;
-            font-size: 1.1em;
-            font-weight: 600;
-        }
-
-        .training-section-icon {
-            width: 25px;
-            height: 25px;
-            background: #F5B800;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #2c3a6b;
-        }
-
-        /* Stats Sections Styles */
-        .stats-section {
-            margin-bottom: 25px;
-            padding: 15px;
-            background: #f8f9ff;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
-        }
-
-        .stats-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .stats-section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            color: #2c3a6b;
-            font-size: 1em;
-            font-weight: 600;
-        }
-
-        .stats-section-icon {
-            width: 22px;
-            height: 22px;
-            background: #F5B800;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            color: #2c3a6b;
-        }
-
-        /* Quote Manager Styles */
-        .quote-manager-card {
-            grid-column: span 2;
-            min-height: 400px;
-        }
-
-        .quote-input-section {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: #f8f9ff;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
-        }
-
-        .quote-inputs-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr auto;
-            gap: 15px;
-            align-items: end;
-        }
-
-        .quote-author-input {
-            margin-bottom: 0;
-        }
-
-        .quote-add-btn {
-            margin-bottom: 0;
-            white-space: nowrap;
-        }
-
-        .quotes-display-area {
-            background: #f8f9ff;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
-            padding: 20px;
-            max-height: 350px;
-            overflow-y: auto;
-        }
-
-        .quotes-list {
-            margin-bottom: 20px;
-        }
-
-        .quote-item {
-            border-bottom: 1px solid #e8e8e8;
-            padding: 12px 0;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
-        .quote-item:last-child {
-            border-bottom: none;
-        }
-
-        .quote-database-stats {
-            text-align: center;
-            font-size: 0.9em;
-            color: #666;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .large-card, .quote-manager-card {
-                grid-column: span 1;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            }
-
-            .quote-inputs-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-
-            .quote-add-btn {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px 15px;
-            }
-
-            .header h1 {
-                font-size: 2.2em;
-            }
-
-            .dashboard-card {
-                padding: 20px;
-            }
-
-            .section-title {
-                font-size: 1.8em;
-            }
-
-            .navigation {
-                position: static;
-                margin-bottom: 30px;
-            }
-
-            .nav-menu {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .dashboard-sections {
-                gap: 30px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .metric-value {
-                font-size: 2.5em;
-            }
-
-            .file-upload-area {
-                padding: 20px;
-            }
-
-            .upload-icon {
-                font-size: 2em;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Manufacturing Works</title>
+  <meta name="description" content="Analytics and management dashboard for Manufacturing Works AI tools and chatbot statistics."/>
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon"/>
+
+  <style>
+    /* ============ Base / Reset ============ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Arial', sans-serif; background: #ffffff; min-height: 100vh; color: #2c3a6b;
+    }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+
+    /* ============ Header / Nav ============ */
+    .header { text-align: center; margin-bottom: 50px; }
+    .logo { width: 150px; height: auto; margin: 0 auto 25px; display: block;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); }
+    .header h1 { font-size: 2.8em; margin-bottom: 15px; font-weight: 300; color: #F5B800;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header p { font-size: 1.2em; opacity: 0.8; max-width: 600px; margin: 0 auto; line-height: 1.5; color: #2c3a6b; }
+
+    .navigation { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+    .nav-menu {
+      background: #ffffff; border: 2px solid #e8e8e8; border-radius: 30px; padding: 10px 20px;
+      box-shadow: 0 8px 25px rgba(44, 58, 107, 0.1); display: flex; gap: 15px;
+    }
+    .nav-link {
+      color: #2c3a6b; text-decoration: none; padding: 8px 15px; border-radius: 20px; font-weight: 500;
+      transition: all 0.3s ease; font-size: 14px;
+    }
+    .nav-link:hover { background: #F5B800; color: #2c3a6b; }
+    .nav-link.active { background: #2c3a6b; color: #ffffff; }
+
+    /* ============ Sections / Cards ============ */
+    .dashboard-sections { display: flex; flex-direction: column; gap: 50px; }
+    .section-header {
+      display: flex; align-items: center; gap: 15px; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 3px solid #F5B800;
+    }
+    .section-icon {
+      width: 50px; height: 50px; background: linear-gradient(135deg, #F5B800 0%, #e6a600 100%);
+      border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #2c3a6b;
+      box-shadow: 0 4px 15px rgba(245, 184, 0, 0.2);
+    }
+    .section-title { font-size: 2.2em; color: #2c3a6b; font-weight: 600; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+
+    .dashboard-card {
+      background: #ffffff; border: 2px solid #e8e8e8; border-radius: 20px; padding: 30px;
+      box-shadow: 0 8px 30px rgba(44, 58, 107, 0.1); transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .dashboard-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(90deg, #F5B800 0%, #e6a600 100%);
+    }
+    .dashboard-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(44, 58, 107, 0.15); border-color: #F5B800; }
+    .card-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e8e8e8;
+    }
+    .card-icon {
+      width: 35px; height: 35px; background: #F5B800; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: #2c3a6b;
+    }
+    .card-title { font-size: 1.3em; color: #2c3a6b; font-weight: 600; }
+
+    /* ============ Metrics ============ */
+    .metric-value { font-size: 3em; font-weight: bold; color: #F5B800; text-align: center; margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(245, 184, 0, 0.2); }
+    .metric-label { font-size: 1.1em; color: #2c3a6b; text-align: center; opacity: 0.8; margin-bottom: 15px; }
+    .metric-change {
+      text-align: center; font-size: 0.9em; padding: 5px 12px; border-radius: 15px; display: inline-block;
+      background: rgba(0,0,0,0.04); color:#2c3a6b;
+    }
+    .muted { opacity: .6; }
+
+    /* ============ Progress ============ */
+    .progress-container { margin: 20px 0; }
+    .progress-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95em; }
+    .progress-current { font-weight: 600; color: #2c3a6b; }
+    .progress-limit { color: #666; }
+    .progress-bar { width: 100%; height: 12px; background: #e8e8e8; border-radius: 25px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, #F5B800 0%, #e6a600 100%); border-radius: 25px; width: 0%;
+      box-shadow: 0 2px 8px rgba(245, 184, 0, 0.3);
+      transition: width 0.8s ease;
+    }
+
+    /* ============ Recap & Textareas ============ */
+    .recap-area {
+      background: #f8f9ff; border: 2px solid #e8e8e8; border-radius: 12px; padding: 20px; min-height: 120px;
+      font-size: 0.95em; line-height: 1.6; color: #2c3a6b; margin-top: 15px;
+    }
+    .training-textarea {
+      width: 100%; min-height: 150px; padding: 15px; border: 2px solid #e8e8e8; border-radius: 12px; font-size: 14px;
+      resize: vertical; background: #ffffff; color: #2c3a6b; font-family: inherit; box-shadow: 0 2px 8px rgba(44, 58, 107, 0.05);
+    }
+    .training-textarea:focus { border-color: #F5B800; outline: none; box-shadow: 0 4px 15px rgba(245, 184, 0, 0.15); }
+
+    .quote-input {
+      width: 100%; padding: 12px 15px; border: 2px solid #e8e8e8; border-radius: 12px; font-size: 14px; margin-bottom: 15px;
+      background: #ffffff; color: #2c3a6b; box-shadow: 0 2px 8px rgba(44, 58, 107, 0.05);
+    }
+    .quote-input:focus { border-color: #F5B800; outline: none; box-shadow: 0 4px 15px rgba(245, 184, 0, 0.15); }
+
+    /* ============ Upload ============ */
+    .file-upload-area {
+      border: 2px dashed #e8e8e8; border-radius: 12px; padding: 30px; text-align: center; transition: all 0.3s ease;
+      cursor: pointer; background: #ffffff; margin-top: 15px;
+    }
+    .file-upload-area:hover { border-color: #F5B800; background: rgba(245, 184, 0, 0.05); }
+    .file-upload-area.dragover { border-color: #F5B800; background: rgba(245, 184, 0, 0.1); transform: scale(1.02); }
+    .upload-icon { font-size: 2.5em; color: #F5B800; margin-bottom: 10px; }
+    .upload-text { font-size: 1.1em; color: #2c3a6b; margin-bottom: 5px; }
+    .upload-hint { font-size: 0.9em; color: #666; }
+    .file-input { display: none; }
+    .uploaded-files { margin-top: 15px; }
+    .uploaded-file {
+      background: rgba(245, 184, 0, 0.1); border: 1px solid rgba(245, 184, 0, 0.3); border-radius: 8px; padding: 10px 15px; margin-bottom: 8px;
+      font-size: 14px; color: #2c3a6b; display: flex; align-items: center; gap: 10px;
+    }
+
+    /* ============ Buttons ============ */
+    .action-btn {
+      background: #2c3a6b; color: #ffffff; border: 2px solid #2c3a6b; padding: 12px 25px; font-size: 14px; font-weight: 600;
+      border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(44, 58, 107, 0.2);
+    }
+    .action-btn:hover { background: #ffffff; color: #2c3a6b; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(44, 58, 107, 0.3); }
+    .action-btn.primary { background: #F5B800; border-color: #F5B800; color: #2c3a6b; box-shadow: 0 4px 15px rgba(245, 184, 0, 0.2); }
+    .action-btn.primary:hover { background: #e6a600; border-color: #e6a600; color: #ffffff; box-shadow: 0 6px 20px rgba(245, 184, 0, 0.3); }
+
+    /* ============ Ratios ============ */
+    .ratio-container { margin: 20px 0; }
+    .ratio-bar { height: 25px; background: #e8e8e8; border-radius: 25px; overflow: hidden; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+    .ratio-likes {
+      height: 100%; background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%); float: left; width: 0%;
+      transition: width 0.8s ease; border-radius: 25px 0 0 25px;
+    }
+    .ratio-dislikes {
+      height: 100%; background: linear-gradient(90deg, #f44336 0%, #d32f2f 100%); float: right; width: 0%;
+      transition: width 0.8s ease; border-radius: 0 25px 25px 0;
+    }
+    .ratio-labels { display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.9em; }
+    .ratio-like-label { color: #4CAF50; font-weight: 600; }
+    .ratio-dislike-label { color: #f44336; font-weight: 600; }
+
+    /* ============ Grids (Training tools side-by-side) ============ */
+    .training-tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .training-tool-section {
+      background: #f8f9ff; border: 2px solid #e8e8e8; border-radius: 15px; padding: 25px; transition: all 0.3s ease;
+    }
+    .training-tool-section:hover { border-color: #F5B800; box-shadow: 0 8px 25px rgba(245, 184, 0, 0.1); transform: translateY(-2px); }
+
+    /* ============ Quote Manager ============ */
+    .quote-manager-card { grid-column: span 2; min-height: 400px; }
+    .quote-input-section {
+      margin-bottom: 25px; padding: 20px; background: #f8f9ff; border: 2px solid #e8e8e8; border-radius: 12px;
+    }
+    .quote-inputs-row { display: grid; grid-template-columns: 2fr 1fr auto; gap: 15px; align-items: end; }
+    .quote-author-input { margin-bottom: 0; }
+    .quote-add-btn { margin-bottom: 0; white-space: nowrap; }
+    .quotes-display-area {
+      background: #f8f9ff; border: 2px solid #e8e8e8; border-radius: 12px; padding: 20px; max-height: 350px; overflow-y: auto;
+    }
+    .quotes-list { margin-bottom: 20px; }
+    .quote-item { border-bottom: 1px solid #e8e8e8; padding: 12px 0; line-height: 1.5; font-size: 14px; }
+    .quote-item:last-child { border-bottom: none; }
+    .quote-database-stats { text-align: center; font-size: 0.9em; color: #666; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+
+    /* ============ Responsive ============ */
+    @media (max-width: 1200px) {
+      .quote-manager-card { grid-column: span 1; }
+      .stats-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+      .quote-inputs-row { grid-template-columns: 1fr; gap: 10px; }
+      .quote-add-btn { width: 100%; }
+    }
+    @media (max-width: 900px) {
+      .training-tools-grid { grid-template-columns: 1fr; gap: 20px; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 20px 15px; }
+      .header h1 { font-size: 2.2em; }
+      .dashboard-card { padding: 20px; }
+      .section-title { font-size: 1.8em; }
+      .navigation { position: static; margin-bottom: 30px; }
+      .nav-menu { justify-content: center; flex-wrap: wrap; }
+      .stats-grid { grid-template-columns: 1fr; gap: 20px; }
+      .dashboard-sections { gap: 30px; }
+    }
+    @media (max-width: 480px) { .metric-value { font-size: 2.5em; } .file-upload-area { padding: 20px; } .upload-icon { font-size: 2em; } }
+
+    /* ============ Small helpers ============ */
+    .small { font-size: .85em; }
+    .right { text-align: right; }
+  </style>
 </head>
 <body>
-    <nav class="navigation">
-        <div class="nav-menu">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="content-generator.html" class="nav-link">Content Generator</a>
-            <a href="dashboard.html" class="nav-link active">Dashboard</a>
+  <nav class="navigation">
+    <div class="nav-menu">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="content-generator.html" class="nav-link">Content Generator</a>
+      <a href="dashboard.html" class="nav-link active">Dashboard</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <img src="assets/logo.png" alt="Manufacturing Works Logo" class="logo" />
+      <h1>Analytics Dashboard</h1>
+      <p>Monitor your AI tools performance and manage your content creation resources</p>
+    </div>
+
+    <div class="dashboard-sections">
+      <!-- ==================== MIRA Chatbot Statistics ==================== -->
+      <section>
+        <div class="section-header">
+          <div class="section-icon">🤖</div>
+          <h2 class="section-title">MIRA Chatbot Statistics</h2>
         </div>
-    </nav>
 
-    <div class="container">
-        <div class="header">
-            <img src="assets/logo.png" alt="Manufacturing Works Logo" class="logo">
-            <h1>Analytics Dashboard</h1>
-            <p>Monitor your AI tools performance and manage your content creation resources</p>
+        <div class="stats-grid">
+          <!-- Messages Sent -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <div class="card-icon">💬</div>
+              <h3 class="card-title">Messages Sent</h3>
+            </div>
+            <div id="messagesCountValue" class="metric-value">—</div>
+            <div class="metric-label">
+              Total messages this month
+              <span id="lastUpdatedText" class="small muted" style="display:block; margin-top:6px;">Loading…</span>
+            </div>
+          </div>
+
+          <!-- MIRA Recap -->
+          <div class="dashboard-card">
+            <div class="card-header" style="justify-content:space-between; width:100%;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div class="card-icon">📊</div>
+                <h3 class="card-title">MIRA Conversation Recap</h3>
+              </div>
+              <button id="generateReportBtn" class="action-btn primary">Generate Monthly Report</button>
+            </div>
+            <div id="recapContent" class="recap-area">No data yet.</div>
+          </div>
         </div>
 
-        <div class="dashboard-sections">
-            <!-- MIRA Chatbot Statistics Section -->
-            <section>
-                <div class="section-header">
-                    <div class="section-icon">🤖</div>
-                    <h2 class="section-title">MIRA Chatbot Statistics</h2>
-                </div>
+        <!-- Training Tools: side-by-side -->
+        <div class="training-tools-grid" style="margin-top:30px;">
+          <!-- Upload Training Documents -->
+          <div class="dashboard-card training-tool-section">
+            <div class="card-header">
+              <div class="card-icon">📁</div>
+              <h3 class="card-title">Upload Training Documents</h3>
+            </div>
 
-                <div class="stats-grid">
-                    <!-- Messages Sent to MIRA -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <div class="card-icon">💬</div>
-                            <h3 class="card-title">Messages Sent</h3>
-                        </div>
-                        <div class="metric-value">1,247</div>
-                        <div class="metric-label">Total messages this month</div>
-                        <div class="metric-change positive">↗ +18% from last month</div>
-                    </div>
+            <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('document-upload').click()">
+              <div class="upload-icon">📄</div>
+              <div class="upload-text">Click to upload or drag & drop documents</div>
+              <div class="upload-hint">Supported: PDF, DOC, DOCX, TXT (Max 10MB each)</div>
+            </div>
+            <input type="file" id="document-upload" class="file-input" multiple accept=".pdf,.doc,.docx,.txt" />
+            <div class="uploaded-files" id="uploaded-files"></div>
 
-                    <!-- MIRA Recap -->
-                    <div class="dashboard-card large-card">
-                        <div class="card-header">
-                            <div class="card-icon">📊</div>
-                            <h3 class="card-title">MIRA Conversation Recap</h3>
-                        </div>
-                        <div class="recap-area">
-                            <strong>Top Discussion Topics This Month:</strong><br><br>
-                            • <strong>Manufacturing Process Optimization (32%)</strong> - Users frequently ask about improving efficiency in production lines and reducing waste.<br><br>
-                            • <strong>Workforce Training & Development (28%)</strong> - Questions about employee skill development, safety training, and onboarding procedures.<br><br>
-                            • <strong>Technology Integration (21%)</strong> - Inquiries about implementing automation, IoT sensors, and digital transformation strategies.<br><br>
-                            • <strong>Cost Reduction Strategies (19%)</strong> - Discussions about budget optimization, energy savings, and operational cost management.
-                        </div>
-                    </div>
+            <button class="action-btn primary" style="margin-top: 15px;">Process Documents</button>
+          </div>
 
-                    <!-- Document Upload for Training -->
-                    <div class="dashboard-card large-card">
-                        <div class="card-header">
-                            <div class="card-icon">📁</div>
-                            <h3 class="card-title">Upload Training Documents</h3>
-                        </div>
-                        <div class="file-upload-area" onclick="document.getElementById('document-upload').click()">
-                            <div class="upload-icon">📄</div>
-                            <div class="upload-text">Click to upload or drag & drop documents</div>
-                            <div class="upload-hint">Supported formats: PDF, DOC, DOCX, TXT (Max 10MB each)</div>
-                        </div>
-                        <input type="file" id="document-upload" class="file-input" multiple accept=".pdf,.doc,.docx,.txt">
-                        <div class="uploaded-files" id="uploaded-files">
-                            <!-- Mock uploaded files -->
-                            <div class="uploaded-file">
-                                📄 Wyoming Manufacturing Guidelines.pdf (2.3 MB)
-                            </div>
-                            <div class="uploaded-file">
-                                📄 Safety Protocol Manual.docx (1.8 MB)
-                            </div>
-                        </div>
-                        <button class="action-btn primary" style="margin-top: 15px;">Process Documents</button>
-                    </div>
-
-                    <!-- Manual Training Data Entry -->
-                    <div class="dashboard-card large-card">
-                        <div class="card-header">
-                            <div class="card-icon">✍️</div>
-                            <h3 class="card-title">Manual Training Data Entry</h3>
-                        </div>
-                        <textarea 
-                            class="training-textarea" 
-                            placeholder="Enter training information for MIRA here... 
+          <!-- Manual Training Entry -->
+          <div class="dashboard-card training-tool-section">
+            <div class="card-header">
+              <div class="card-icon">✍️</div>
+              <h3 class="card-title">Manual Training Data Entry</h3>
+            </div>
+            <textarea class="training-textarea" placeholder="Enter training information for MIRA here...
 
 For example:
 - Company policies and procedures
 - Industry-specific terminology
 - FAQ responses
 - Best practices and guidelines
-- Custom knowledge base content"
-                        ></textarea>
-                        <button class="action-btn primary" style="margin-top: 15px;">Add Training Data</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Content Generator Statistics Section -->
-            <section>
-                <div class="section-header">
-                    <div class="section-icon">🚀</div>
-                    <h2 class="section-title">Content Generator Statistics</h2>
-                </div>
-
-                <div class="stats-grid">
-                    <!-- Combined Monthly Stats -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <div class="card-icon">📊</div>
-                            <h3 class="card-title">Monthly Statistics</h3>
-                        </div>
-                        
-                        <!-- Monthly Usage Section -->
-                        <div class="stats-section">
-                            <h4 class="stats-section-title">
-                                <div class="stats-section-icon">📈</div>
-                                Usage Progress
-                            </h4>
-                            <div class="progress-container">
-                                <div class="progress-info">
-                                    <span class="progress-current">342 posts generated</span>
-                                    <span class="progress-limit">750 limit</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 45.6%;"></div>
-                                </div>
-                            </div>
-                            <div class="metric-change positive" style="text-align: center; margin-top: 10px;">
-                                ↗ 54% usage rate
-                            </div>
-                        </div>
-
-                        <!-- User Feedback Section -->
-                        <div class="stats-section">
-                            <h4 class="stats-section-title">
-                                <div class="stats-section-icon">👍</div>
-                                User Feedback
-                            </h4>
-                            <div class="ratio-container">
-                                <div class="ratio-bar">
-                                    <div class="ratio-likes" style="width: 73%;"></div>
-                                    <div class="ratio-dislikes" style="width: 27%;"></div>
-                                </div>
-                                <div class="ratio-labels">
-                                    <span class="ratio-like-label">👍 73% Likes (184)</span>
-                                    <span class="ratio-dislike-label">👎 27% Dislikes (68)</span>
-                                </div>
-                            </div>
-                            <div style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666;">
-                                252 total votes this month
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quote Database Manager - Full Width -->
-                    <div class="dashboard-card quote-manager-card">
-                        <div class="card-header">
-                            <div class="card-icon">💭</div>
-                            <h3 class="card-title">Quote Database Manager</h3>
-                        </div>
-                        
-                        <div class="quote-input-section">
-                            <div class="quote-inputs-row">
-                                <input 
-                                    type="text" 
-                                    class="quote-input" 
-                                    placeholder="Enter quote text..."
-                                    id="quote-text"
-                                >
-                                <input 
-                                    type="text" 
-                                    class="quote-input quote-author-input" 
-                                    placeholder="Quote author (optional)..."
-                                    id="quote-author"
-                                >
-                                <button class="action-btn primary quote-add-btn" onclick="addQuote()">Add Quote</button>
-                            </div>
-                        </div>
-
-                        <div class="quotes-display-area">
-                            <h4 style="margin-bottom: 15px; color: #2c3a6b;">Recent Quotes Added:</h4>
-                            <div id="quotes-list" class="quotes-list">
-                                <div class="quote-item">
-                                    "Innovation distinguishes between a leader and a follower." - <em>Steve Jobs</em>
-                                </div>
-                                <div class="quote-item">
-                                    "Quality is not an act, it is a habit." - <em>Aristotle</em>
-                                </div>
-                                <div class="quote-item">
-                                    "Manufacturing is more than just putting parts together. It's coming up with ideas, testing principles and perfecting the engineering." - <em>James Dyson</em>
-                                </div>
-                                <div class="quote-item">
-                                    "The way to get started is to quit talking and begin doing." - <em>Walt Disney</em>
-                                </div>
-                                <div class="quote-item">
-                                    "Continuous improvement is better than delayed perfection." - <em>Mark Twain</em>
-                                </div>
-                            </div>
-                            <div class="quote-database-stats">
-                                <span>Total quotes in database: 47</span>
-                                <span>•</span>
-                                <span>Most used category: Motivation (23)</span>
-                                <span>•</span>
-                                <span>Added this month: 12</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+- Custom knowledge base content"></textarea>
+            <button class="action-btn primary" style="margin-top: 15px;">Add Training Data</button>
+          </div>
         </div>
+      </section>
+
+      <!-- ==================== Content Generator Statistics ==================== -->
+      <section>
+        <div class="section-header">
+          <div class="section-icon">🚀</div>
+          <h2 class="section-title">Content Generator Statistics</h2>
+        </div>
+
+        <div class="stats-grid">
+          <!-- Combined Monthly Stats -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <div class="card-icon">📊</div>
+              <h3 class="card-title">Monthly Statistics</h3>
+            </div>
+
+            <!-- Usage Progress -->
+            <div class="stats-section">
+              <h4 class="stats-section-title" style="display:flex; align-items:center; gap:10px;">
+                <div class="stats-section-icon" style="width:22px;height:22px;background:#F5B800;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#2c3a6b;">📈</div>
+                Usage Progress
+              </h4>
+              <div class="progress-container">
+                <div class="progress-info">
+                  <span id="postsGeneratedText" class="progress-current">—</span>
+                  <span id="monthlyLimitText" class="progress-limit">—</span>
+                </div>
+                <div class="progress-bar">
+                  <div id="usageProgressFill" class="progress-fill" style="width:0%;"></div>
+                </div>
+              </div>
+              <div id="usageRateText" class="metric-change" style="text-align:center; margin-top:10px;">Loading…</div>
+            </div>
+
+            <!-- User Feedback -->
+            <div class="stats-section">
+              <h4 class="stats-section-title" style="display:flex; align-items:center; gap:10px;">
+                <div class="stats-section-icon" style="width:22px;height:22px;background:#F5B800;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#2c3a6b;">👍</div>
+                User Feedback
+              </h4>
+              <div class="ratio-container">
+                <div class="ratio-bar">
+                  <div id="likesFill" class="ratio-likes" style="width:0%;"></div>
+                  <div id="dislikesFill" class="ratio-dislikes" style="width:0%;"></div>
+                </div>
+                <div class="ratio-labels">
+                  <span id="likeLabel" class="ratio-like-label">👍 —</span>
+                  <span id="dislikeLabel" class="ratio-dislike-label">👎 —</span>
+                </div>
+              </div>
+              <div id="totalVotesText" style="text-align:center; margin-top:10px; font-size:0.9em; color:#666;">—</div>
+            </div>
+          </div>
+
+          <!-- Quote Database Manager -->
+          <div class="dashboard-card quote-manager-card">
+            <div class="card-header">
+              <div class="card-icon">💭</div>
+              <h3 class="card-title">Quote Database Manager</h3>
+            </div>
+
+            <div class="quote-input-section">
+              <div class="quote-inputs-row">
+                <input type="text" class="quote-input" placeholder="Enter quote text..." id="quote-text"/>
+                <input type="text" class="quote-input quote-author-input" placeholder="Quote author (optional)..." id="quote-author"/>
+                <button class="action-btn primary quote-add-btn" onclick="addQuote(event)">Add Quote</button>
+              </div>
+            </div>
+
+            <div class="quotes-display-area">
+              <h4 style="margin-bottom: 15px; color: #2c3a6b;">Recent Quotes Added:</h4>
+              <div id="quotes-list" class="quotes-list">
+                <div class="quote-item">
+                  "Innovation distinguishes between a leader and a follower." - <em>Steve Jobs</em>
+                </div>
+                <div class="quote-item">
+                  "Quality is not an act, it is a habit." - <em>Aristotle</em>
+                </div>
+                <div class="quote-item">
+                  "Manufacturing is more than just putting parts together. It's coming up with ideas, testing principles and perfecting the engineering." - <em>James Dyson</em>
+                </div>
+                <div class="quote-item">
+                  "The way to get started is to quit talking and begin doing." - <em>Walt Disney</em>
+                </div>
+                <div class="quote-item">
+                  "Continuous improvement is better than delayed perfection." - <em>Mark Twain</em>
+                </div>
+              </div>
+              <div class="quote-database-stats">
+                <span>Total quotes in database: 47</span>
+                <span>•</span>
+                <span>Most used category: Motivation (23)</span>
+                <span>•</span>
+                <span>Added this month: 12</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
+  </div>
 
-    <script>
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Manufacturing Works Dashboard loaded');
-            
-            initializeFileUpload();
-            animateProgressBars();
+  <script>
+    // ------------------- Config -------------------
+    const WEBHOOKS = {
+      INIT: "https://thayneautomations.app.n8n.cloud/webhook/Retrieve-Dashboard-Information",
+      GENERATE_REPORT: "https://thayneautomations.app.n8n.cloud/webhook/MIRA-Get-Report",
+    };
+
+    // ------------------- Utilities -------------------
+    const toInt = (v, d = 0) => {
+      const n = Number(String(v).replace(/,/g, '').trim());
+      return Number.isFinite(n) ? n : d;
+    };
+    const clampPct = (n) => Math.max(0, Math.min(100, n));
+
+    function setProgressAnimated(el, pct) {
+      if (!el) return;
+      const target = clampPct(pct);
+      // animate from current to target
+      requestAnimationFrame(() => {
+        el.style.width = '0%';
+        requestAnimationFrame(() => {
+          el.style.width = target + '%';
         });
+      });
+    }
 
-        // File Upload Functionality
-        function initializeFileUpload() {
-            const fileUploadArea = document.querySelector('.file-upload-area');
-            const fileInput = document.getElementById('document-upload');
+    function setRatioAnimated(likesEl, dislikesEl, likePct, dislikePct) {
+      if (likesEl) { likesEl.style.width = '0%'; requestAnimationFrame(() => likesEl.style.width = clampPct(likePct) + '%'); }
+      if (dislikesEl) { dislikesEl.style.width = '0%'; requestAnimationFrame(() => dislikesEl.style.width = clampPct(dislikePct) + '%'); }
+    }
 
-            if (fileUploadArea && fileInput) {
-                fileUploadArea.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    this.classList.add('dragover');
-                });
+    async function postJSON(url, body = {}) {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        mode: "cors",
+        credentials: "omit",
+      });
+      const text = await res.text();
+      // Try JSON, fallback to text
+      try { return JSON.parse(text); } catch { return text; }
+    }
 
-                fileUploadArea.addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragover');
-                });
+    // ------------------- DOM Refs -------------------
+    const els = {};
+    function cacheEls() {
+      els.messages = document.getElementById('messagesCountValue');
+      els.lastUpdated = document.getElementById('lastUpdatedText');
 
-                fileUploadArea.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragover');
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        fileInput.files = files;
-                        displayUploadedFiles(files);
-                    }
-                });
+      els.postsGeneratedText = document.getElementById('postsGeneratedText');
+      els.monthlyLimitText = document.getElementById('monthlyLimitText');
+      els.usageProgressFill = document.getElementById('usageProgressFill');
+      els.usageRateText = document.getElementById('usageRateText');
 
-                fileInput.addEventListener('change', function() {
-                    if (this.files.length > 0) {
-                        displayUploadedFiles(this.files);
-                    }
-                });
-            }
+      els.likesFill = document.getElementById('likesFill');
+      els.dislikesFill = document.getElementById('dislikesFill');
+      els.likeLabel = document.getElementById('likeLabel');
+      els.dislikeLabel = document.getElementById('dislikeLabel');
+      els.totalVotesText = document.getElementById('totalVotesText');
+
+      els.recapContent = document.getElementById('recapContent');
+      els.generateBtn = document.getElementById('generateReportBtn');
+
+      els.fileUploadArea = document.getElementById('fileUploadArea');
+      els.fileInput = document.getElementById('document-upload');
+      els.uploadedFiles = document.getElementById('uploaded-files');
+    }
+
+    // ------------------- Initialization (n8n INIT webhook) -------------------
+    async function initializeDashboard() {
+      try {
+        setLoadingState(true);
+
+        const payload = await postJSON(WEBHOOKS.INIT);
+
+        // Expecting: [ { ...stats } ]
+        const data = Array.isArray(payload) ? payload[0] : payload;
+
+        // Safely map fields
+        const totalMessages = data?.["Total Messages Chatbot"];
+        const totalPostsGenerated = data?.["Total Posts Generated"];
+        const monthlyLimit = data?.["Monthly Limit"];
+        const usagePercentage = data?.["Usage Percentage"];
+        const remainingQuota = data?.["Remaining Quota"];
+        const upvotes = data?.["Upvotes"];
+        const downvotes = data?.["Downvotes"];
+        const likePct = data?.["Like Percentage"];
+        const dislikePct = data?.["Dislike Percentage"];
+        const lastUpdatedISO = data?.["Last Updated"];
+
+        // Messages
+        const messagesInt = toInt(totalMessages);
+        els.messages.textContent = Number.isFinite(messagesInt) ? messagesInt.toLocaleString() : '—';
+
+        // Last Updated
+        if (lastUpdatedISO) {
+          try {
+            const d = new Date(lastUpdatedISO);
+            els.lastUpdated.textContent = `Last updated: ${d.toLocaleString()}`;
+          } catch { els.lastUpdated.textContent = ''; }
+        } else {
+          els.lastUpdated.textContent = '';
         }
 
-        function displayUploadedFiles(files) {
-            const uploadedFilesContainer = document.getElementById('uploaded-files');
-            
-            Array.from(files).forEach(file => {
-                const fileElement = document.createElement('div');
-                fileElement.className = 'uploaded-file';
-                fileElement.innerHTML = `
-                    📄 ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)
-                `;
-                uploadedFilesContainer.appendChild(fileElement);
-            });
+        // Usage
+        const postsInt = toInt(totalPostsGenerated);
+        const limitInt = toInt(monthlyLimit);
+        const pctFromField = toInt(usagePercentage);
+        const computedPct = limitInt > 0 ? Math.round((postsInt / limitInt) * 100) : 0;
+        const pct = Number.isFinite(pctFromField) && pctFromField > 0 ? pctFromField : computedPct;
+
+        els.postsGeneratedText.textContent = Number.isFinite(postsInt) ? `${postsInt.toLocaleString()} posts generated` : '—';
+        els.monthlyLimitText.textContent = Number.isFinite(limitInt) ? `${limitInt.toLocaleString()} limit` : '—';
+        setProgressAnimated(els.usageProgressFill, pct);
+        els.usageRateText.textContent = `↗ ${pct}% usage rate`;
+
+        // Feedback
+        const up = toInt(upvotes);
+        const down = toInt(downvotes);
+        const totalVotes = up + down;
+
+        const likeP = Number.isFinite(toInt(likePct)) ? toInt(likePct) : (totalVotes ? Math.round((up / totalVotes) * 100) : 0);
+        const dislikeP = Number.isFinite(toInt(dislikePct)) ? toInt(dislikePct) : clampPct(100 - likeP);
+
+        setRatioAnimated(els.likesFill, els.dislikesFill, likeP, dislikeP);
+        els.likeLabel.textContent = `👍 ${likeP}% Likes (${Number.isFinite(up) ? up : 0})`;
+        els.dislikeLabel.textContent = `👎 ${dislikeP}% Dislikes (${Number.isFinite(down) ? down : 0})`;
+        els.totalVotesText.textContent = `${totalVotes.toLocaleString()} total votes this month`;
+
+      } catch (err) {
+        console.error('INIT webhook error:', err);
+        // Gentle fallback messaging
+        if (els.usageRateText) els.usageRateText.textContent = 'Unable to load usage right now.';
+        if (els.lastUpdated) els.lastUpdated.textContent = '';
+      } finally {
+        setLoadingState(false);
+      }
+    }
+
+    function setLoadingState(isLoading) {
+      // You can expand this to per-card skeletons if desired
+      if (isLoading) {
+        if (els.messages) els.messages.textContent = '…';
+        if (els.usageRateText) els.usageRateText.textContent = 'Loading…';
+        if (els.postsGeneratedText) els.postsGeneratedText.textContent = 'Loading…';
+        if (els.monthlyLimitText) els.monthlyLimitText.textContent = 'Loading…';
+      }
+    }
+
+    // ------------------- Generate Monthly Report (on click) -------------------
+    async function handleGenerateReport() {
+      if (!els.recapContent) return;
+      const btn = els.generateBtn;
+      const original = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Generating…';
+
+      try {
+        els.recapContent.textContent = 'Working on it…';
+        const res = await postJSON(WEBHOOKS.GENERATE_REPORT);
+
+        // Try to render nicely:
+        if (typeof res === 'string') {
+          // If backend returned HTML snippet or markdown-like text
+          if (res.trim().startsWith('<')) {
+            els.recapContent.innerHTML = res;
+          } else {
+            els.recapContent.textContent = res;
+          }
+        } else if (res && typeof res === 'object') {
+          // If backend returns structured data, try common shapes:
+          if (res.recapHtml) {
+            els.recapContent.innerHTML = res.recapHtml;
+          } else if (res.recap) {
+            els.recapContent.textContent = res.recap;
+          } else {
+            // Fallback: pretty-print
+            els.recapContent.innerHTML = `<pre style="white-space:pre-wrap;">${escapeHtml(JSON.stringify(res, null, 2))}</pre>`;
+          }
+        } else {
+          els.recapContent.textContent = 'Report generated (no additional content).';
         }
+      } catch (err) {
+        console.error('Generate report error:', err);
+        els.recapContent.textContent = 'Failed to generate report. Please try again.';
+      } finally {
+        btn.disabled = false; btn.textContent = original;
+      }
+    }
 
-        // Quote Management
-        function addQuote() {
-            const quoteText = document.getElementById('quote-text').value.trim();
-            const quoteAuthor = document.getElementById('quote-author').value.trim();
-            
-            if (!quoteText) {
-                alert('Please enter a quote text.');
-                return;
-            }
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
 
-            const quotesList = document.getElementById('quotes-list');
-            const newQuote = document.createElement('div');
-            newQuote.className = 'quote-item';
-            
-            const authorText = quoteAuthor ? ` - <em>${quoteAuthor}</em>` : '';
-            newQuote.innerHTML = `"${quoteText}"${authorText}`;
-            
-            // Add to top of list
-            quotesList.insertBefore(newQuote, quotesList.firstChild);
-            
-            // Clear inputs
-            document.getElementById('quote-text').value = '';
-            document.getElementById('quote-author').value = '';
-            
-            // Show success feedback
-            const button = event.target;
-            const originalText = button.textContent;
-            button.textContent = 'Added!';
-            button.style.background = '#4CAF50';
-            
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.style.background = '';
-            }, 2000);
+    // ------------------- File Upload UI -------------------
+    function initializeFileUpload() {
+      if (!els.fileUploadArea || !els.fileInput) return;
+
+      els.fileUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault(); els.fileUploadArea.classList.add('dragover');
+      });
+      els.fileUploadArea.addEventListener('dragleave', (e) => {
+        e.preventDefault(); els.fileUploadArea.classList.remove('dragover');
+      });
+      els.fileUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault(); els.fileUploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) { els.fileInput.files = files; displayUploadedFiles(files); }
+      });
+      els.fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) displayUploadedFiles(this.files);
+      });
+    }
+
+    function displayUploadedFiles(files) {
+      if (!els.uploadedFiles) return;
+      Array.from(files).forEach(file => {
+        const fileElement = document.createElement('div');
+        fileElement.className = 'uploaded-file';
+        fileElement.innerHTML = `📄 ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
+        els.uploadedFiles.appendChild(fileElement);
+      });
+    }
+
+    // ------------------- Quotes -------------------
+    function addQuote(event) {
+      const quoteTextEl = document.getElementById('quote-text');
+      const quoteAuthorEl = document.getElementById('quote-author');
+      const quoteText = quoteTextEl.value.trim();
+      const quoteAuthor = quoteAuthorEl.value.trim();
+
+      if (!quoteText) { alert('Please enter a quote text.'); return; }
+
+      const quotesList = document.getElementById('quotes-list');
+      const newQuote = document.createElement('div');
+      newQuote.className = 'quote-item';
+      const authorText = quoteAuthor ? ` - <em>${escapeHtml(quoteAuthor)}</em>` : '';
+      newQuote.innerHTML = `"${escapeHtml(quoteText)}"${authorText}`;
+      quotesList.insertBefore(newQuote, quotesList.firstChild);
+
+      quoteTextEl.value = ''; quoteAuthorEl.value = '';
+
+      const button = event.target; const originalText = button.textContent;
+      button.textContent = 'Added!'; button.style.background = '#4CAF50';
+      setTimeout(() => { button.textContent = originalText; button.style.background = ''; }, 1600);
+    }
+    window.addQuote = addQuote; // for inline onclick
+
+    // Keyboard shortcut for adding quotes
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        if (document.activeElement?.id === 'quote-text' || document.activeElement?.id === 'quote-author') {
+          e.preventDefault();
+          const fakeEvent = { target: document.querySelector('.quote-add-btn') || { textContent: 'Add Quote', style:{} } };
+          addQuote(fakeEvent);
         }
+      }
+    });
 
-        // Animate progress bars on load
-        function animateProgressBars() {
-            setTimeout(() => {
-                const progressFills = document.querySelectorAll('.progress-fill');
-                progressFills.forEach(fill => {
-                    const width = fill.style.width;
-                    fill.style.width = '0%';
-                    setTimeout(() => {
-                        fill.style.width = width;
-                    }, 100);
-                });
+    // ------------------- Boot -------------------
+    document.addEventListener('DOMContentLoaded', () => {
+      cacheEls();
+      initializeFileUpload();
 
-                const ratioElements = document.querySelectorAll('.ratio-likes, .ratio-dislikes');
-                ratioElements.forEach(element => {
-                    const width = element.style.width;
-                    element.style.width = '0%';
-                    setTimeout(() => {
-                        element.style.width = width;
-                    }, 200);
-                });
-            }, 500);
-        }
+      // Wire up report button
+      els.generateBtn?.addEventListener('click', handleGenerateReport);
 
-        // Mock data updates (simulate real-time updates)
-        setInterval(() => {
-            // Simulate message count updates
-            const messageCount = document.querySelector('.metric-value');
-            if (messageCount) {
-                const currentCount = parseInt(messageCount.textContent.replace(',', ''));
-                if (Math.random() > 0.7) { // 30% chance to update
-                    messageCount.textContent = (currentCount + 1).toLocaleString();
-                }
-            }
-        }, 30000); // Update every 30 seconds
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                if (document.activeElement.id === 'quote-text' || document.activeElement.id === 'quote-author') {
-                    e.preventDefault();
-                    addQuote();
-                }
-            }
-        });
-    </script>
+      // Kick off initial data load
+      initializeDashboard();
+    });
+  </script>
 </body>
 </html>
