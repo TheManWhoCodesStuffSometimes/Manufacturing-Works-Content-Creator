@@ -54,116 +54,6 @@
             color: #2c3a6b;
         }
 
-        /* Trial Status Bar */
-        .trial-status-bar {
-            background: linear-gradient(135deg, #F5B800 0%, #e6a600 100%);
-            color: #2c3a6b;
-            padding: 15px 30px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(245, 184, 0, 0.2);
-            display: none;
-        }
-
-        .trial-status-bar.active {
-            display: block;
-        }
-
-        .trial-status-bar.expired {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
-            color: #ffffff;
-        }
-
-        .trial-status-bar h3 {
-            font-size: 1.4em;
-            margin-bottom: 5px;
-        }
-
-        .trial-status-bar p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        /* Access Denied Overlay */
-        .access-denied {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(44, 58, 107, 0.95);
-            color: #ffffff;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-
-        .access-denied.show {
-            display: flex;
-        }
-
-        .access-denied-content {
-            background: #ffffff;
-            color: #2c3a6b;
-            padding: 50px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 600px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        .access-denied-content h2 {
-            font-size: 2.5em;
-            color: #F5B800;
-            margin-bottom: 20px;
-        }
-
-        .access-denied-content p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .subscription-btn {
-            background: #F5B800;
-            color: #2c3a6b;
-            border: none;
-            padding: 20px 40px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 10px;
-            box-shadow: 0 6px 20px rgba(245, 184, 0, 0.3);
-        }
-
-        .subscription-btn:hover {
-            background: #e6a600;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(245, 184, 0, 0.4);
-        }
-
-        .back-btn {
-            background: transparent;
-            color: #2c3a6b;
-            border: 2px solid #2c3a6b;
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 10px;
-        }
-
-        .back-btn:hover {
-            background: #2c3a6b;
-            color: #ffffff;
-        }
-
         /* Tab System Styles */
         .content-tabs {
             background: #ffffff;
@@ -756,11 +646,10 @@
             color: #2c3a6b;
         }
 
-        /* Action Buttons */
+        /* Action Buttons - Only Go to Post Editor */
         .post-action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            display: flex;
+            justify-content: center;
             margin-top: 20px;
         }
 
@@ -773,47 +662,11 @@
             font-size: 13px;
             font-weight: 600;
             box-shadow: 0 2px 8px rgba(44, 58, 107, 0.1);
-        }
-
-        .format-btn {
-            background: #F5B800;
-            color: #2c3a6b;
-        }
-
-        .format-btn:hover {
-            background: #e6a600;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 184, 0, 0.3);
-        }
-
-        .content-btn {
-            background: #e8e8e8;
-            color: #2c3a6b;
-        }
-
-        .content-btn:hover {
-            background: #d0d0d0;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(44, 58, 107, 0.2);
-        }
-
-        .background-btn {
-            background: #2c3a6b;
-            color: #ffffff;
-        }
-
-        .background-btn:hover {
-            background: #1e2859;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(44, 58, 107, 0.3);
-        }
-
-        .edit-btn {
             background: #4CAF50;
             color: #ffffff;
         }
 
-        .edit-btn:hover {
+        .action-btn:hover {
             background: #45a049;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
@@ -857,57 +710,18 @@
                 font-size: 14px;
             }
 
-            .post-action-buttons {
-                grid-template-columns: 1fr;
-            }
-
-            .action-btn {
-                font-size: 12px;
-                padding: 10px 15px;
-            }
-
             .logo {
                 width: 150px;
-            }
-
-            .access-denied-content {
-                padding: 30px;
-                margin: 20px;
-            }
-
-            .access-denied-content h2 {
-                font-size: 2em;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Access Denied Overlay -->
-    <div class="access-denied" id="access-denied-overlay">
-        <div class="access-denied-content">
-            <h2>🔒 Trial Expired</h2>
-            <p>Your 14-day free trial has ended. Subscribe now to continue creating professional LinkedIn content with unlimited access to our AI-powered tools.</p>
-            
-            <div style="margin: 30px 0;">
-                <div style="font-size: 2.5em; color: #F5B800; font-weight: bold; margin-bottom: 10px;">$300<span style="font-size: 0.4em;">/month</span></div>
-                <p style="font-size: 1.1em; opacity: 0.8;">Complete AI automation solution</p>
-            </div>
-
-            <button class="subscription-btn" onclick="startSubscription()">Subscribe Now</button>
-            <button class="back-btn" onclick="goToHomepage()">Back to Homepage</button>
-        </div>
-    </div>
-
     <div class="container">
         <div class="header">
             <img src="assets/logo.png" alt="Manufacturing Works Logo" class="logo">
             <h1>Content Generator</h1>
             <p>Create professional LinkedIn posts in seconds</p>
-        </div>
-
-        <!-- Trial Status Bar -->
-        <div class="trial-status-bar" id="trial-status-bar">
-            <!-- Populated by JavaScript -->
         </div>
 
         <!-- Main Form -->
@@ -1152,10 +966,7 @@
                 </div>
 
                 <div class="post-action-buttons">
-                    <button type="button" class="action-btn format-btn" data-post-number="1">Change Format</button>
-                    <button type="button" class="action-btn content-btn" data-post-number="1">Change Text Content</button>
-                    <button type="button" class="action-btn background-btn" data-post-number="1">Change Background</button>
-                    <button type="button" class="action-btn edit-btn" data-post-number="1">Go to Post Editor</button>
+                    <button type="button" class="action-btn" data-post-number="1">Go to Post Editor</button>
                 </div>
             </div>
 
@@ -1172,10 +983,7 @@
                 </div>
 
                 <div class="post-action-buttons">
-                    <button type="button" class="action-btn format-btn" data-post-number="2">Change Format</button>
-                    <button type="button" class="action-btn content-btn" data-post-number="2">Change Text Content</button>
-                    <button type="button" class="action-btn background-btn" data-post-number="2">Change Background</button>
-                    <button type="button" class="action-btn edit-btn" data-post-number="2">Go to Post Editor</button>
+                    <button type="button" class="action-btn" data-post-number="2">Go to Post Editor</button>
                 </div>
             </div>
         </div>
@@ -1187,82 +995,6 @@
     </div>
 
     <script>
-        // Trial Management System (shared with other pages)
-        class TrialManager {
-            constructor() {
-                this.TRIAL_DURATION = 14; // days
-                this.STORAGE_KEY = 'mw_trial_data';
-                this.init();
-            }
-
-            init() {
-                this.updateTrialStatus();
-            }
-
-            getTrialData() {
-                const stored = localStorage.getItem(this.STORAGE_KEY);
-                return stored ? JSON.parse(stored) : null;
-            }
-
-            getTrialStatus() {
-                const trialData = this.getTrialData();
-                
-                if (!trialData || !trialData.hasStarted) {
-                    return { status: 'not_started', daysLeft: this.TRIAL_DURATION };
-                }
-
-                const startDate = new Date(trialData.startDate);
-                const now = new Date();
-                const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-                const daysLeft = Math.max(0, this.TRIAL_DURATION - daysPassed);
-
-                if (daysLeft > 0) {
-                    return { status: 'active', daysLeft, daysPassed };
-                } else {
-                    return { status: 'expired', daysLeft: 0, daysPassed };
-                }
-            }
-
-            checkAccess() {
-                const status = this.getTrialStatus();
-                
-                if (status.status === 'expired') {
-                    this.showAccessDenied();
-                    return false;
-                } else if (status.status === 'not_started') {
-                    // Redirect to homepage to start trial
-                    window.location.href = 'index.html';
-                    return false;
-                }
-                return true;
-            }
-
-            showAccessDenied() {
-                document.getElementById('access-denied-overlay').classList.add('show');
-            }
-
-            updateTrialStatus() {
-                const status = this.getTrialStatus();
-                const statusBar = document.getElementById('trial-status-bar');
-                
-                if (status.status === 'active') {
-                    statusBar.innerHTML = `
-                        <h3>🎉 Free Trial Active</h3>
-                        <p>${status.daysLeft} days remaining of your 14-day trial</p>
-                    `;
-                    statusBar.className = 'trial-status-bar active';
-                } else if (status.status === 'expired') {
-                    statusBar.innerHTML = `
-                        <h3>⏰ Trial Expired</h3>
-                        <p>Subscribe now to continue using the content generator</p>
-                    `;
-                    statusBar.className = 'trial-status-bar active expired';
-                } else {
-                    statusBar.className = 'trial-status-bar';
-                }
-            }
-        }
-
         // Store form data globally for edit functionality and Airtable integration
         let lastFormData = {};
         let generatedContent = {
@@ -1277,21 +1009,10 @@
             postB_recordId: null
         };
 
-        // Initialize trial manager
-        let trialManager;
-
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Manufacturing Works Content Generator loaded');
             
-            // Initialize trial manager and check access
-            trialManager = new TrialManager();
-            
-            // Check if user has access before loading anything else
-            if (!trialManager.checkAccess()) {
-                return; // Stop execution if no access
-            }
-
             initializeTabs();
             initializeFormHandlers();
             initializeFileUpload();
@@ -1302,17 +1023,6 @@
             console.log('Upload Image Webhook URL:', 'https://thayneautomations.app.n8n.cloud/webhook/Submission-Recieved-MF-Upload-Image');
             console.log('Session ID:', currentSession.sessionId);
         });
-
-        // Global functions for access denied overlay
-        function startSubscription() {
-            // TODO: Implement Stripe checkout
-            console.log('Starting Stripe subscription process...');
-            alert('Stripe integration coming soon!\n\nThis will redirect to secure Stripe checkout for $300/month subscription.');
-        }
-
-        function goToHomepage() {
-            window.location.href = 'index.html';
-        }
 
         // Tab System Functionality
         function initializeTabs() {
@@ -1451,11 +1161,6 @@
             // Enhanced vote button functionality with actual webhook integration
             document.addEventListener('click', async function(e) {
                 if (e.target.classList.contains('vote-btn')) {
-                    // Check trial access first
-                    if (!trialManager.checkAccess()) {
-                        return;
-                    }
-
                     const postId = e.target.getAttribute('data-post'); // "1" or "2"
                     const voteType = e.target.getAttribute('data-vote'); // "up" or "down"
 
@@ -1549,17 +1254,11 @@
                 }
             });
 
-            // Action Button Handlers
+            // Action Button Handlers - Only "Go to Post Editor"
             document.addEventListener('click', function(e) {
                 const postNumber = e.target.getAttribute('data-post-number');
 
-                if (e.target.classList.contains('format-btn')) {
-                    handleFormatChange(postNumber);
-                } else if (e.target.classList.contains('content-btn')) {
-                    handleContentChange(postNumber);
-                } else if (e.target.classList.contains('background-btn')) {
-                    handleBackgroundChange(postNumber);
-                } else if (e.target.classList.contains('edit-btn')) {
+                if (e.target.classList.contains('action-btn')) {
                     handlePostEdit(postNumber);
                 }
             });
@@ -1567,39 +1266,12 @@
             // Main form submission handler
             document.getElementById('generator-form').addEventListener('submit', async function(e) {
                 e.preventDefault();
-                
-                // Check trial access before form submission
-                if (!trialManager.checkAccess()) {
-                    return;
-                }
-                
                 await handleFormSubmission();
             });
         }
 
-        // Action Button Handlers
-        function handleFormatChange(postNumber) {
-            if (!trialManager.checkAccess()) return;
-            console.log(`Changing format for Post ${postNumber}`);
-            showMessage(`Format change for Post ${postNumber} - Coming soon!`, 'success');
-        }
-
-        function handleContentChange(postNumber) {
-            if (!trialManager.checkAccess()) return;
-            console.log(`Changing content for Post ${postNumber}`);
-            showMessage(`Content change for Post ${postNumber} - Coming soon!`, 'success');
-        }
-
-        function handleBackgroundChange(postNumber) {
-            if (!trialManager.checkAccess()) return;
-            console.log(`Changing background for Post ${postNumber}`);
-            showMessage(`Background change for Post ${postNumber} - Coming soon!`, 'success');
-        }
-
         // Enhanced handlePostEdit function to pass image URL and data via parameters
         function handlePostEdit(postNumber) {
-            if (!trialManager.checkAccess()) return;
-            
             // Get the correct record ID and generated content for this specific post
             const recordId = postNumber === "1" ? currentSession.postA_recordId : currentSession.postB_recordId;
             const postContent = postNumber === "1" ? generatedContent.post1 : generatedContent.post2;
